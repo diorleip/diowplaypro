@@ -1,0 +1,13 @@
+entrar na pasta:
+
+cd "D:\projetos diowplay\diowplaypro"
+
+rodar online:
+
+git add .
+git commit -m "Atualiza guia"
+git push
+
+rodar local:
+
+npm run dev

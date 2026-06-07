@@ -10,7 +10,7 @@ export const metadata:
 Metadata = {
 
   title:
-    "DiowPlay Pro",
+    "gerador.diowplay",
 
   description:
     "Plataforma Premium"
