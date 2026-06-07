@@ -1,80 +1,94 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
-  const jogos = [
-    {
-      liga: "🇧🇷 Brasileirão Série A",
-      casa: "Flamengo",
-      fora: "Palmeiras",
-      horario: "16:00",
-      transmissao: "Globo e Premiere",
-      logoCasa: "https://media.api-sports.io/football/teams/127.png",
-      logoFora: "https://media.api-sports.io/football/teams/121.png",
-    },
-    {
-      liga: "🇧🇷 Brasileirão Série A",
-      casa: "Corinthians",
-      fora: "São Paulo",
-      horario: "18:30",
-      transmissao: "Premiere",
-      logoCasa: "https://media.api-sports.io/football/teams/131.png",
-      logoFora: "https://media.api-sports.io/football/teams/126.png",
-    },
-    {
-      liga: "🏆 Libertadores",
-      casa: "River Plate",
-      fora: "Boca Juniors",
-      horario: "19:00",
-      transmissao: "ESPN e Disney+",
-      logoCasa: "https://media.api-sports.io/football/teams/435.png",
-      logoFora: "https://media.api-sports.io/football/teams/451.png",
-    },
-    {
-      liga: "🇪🇸 La Liga",
-      casa: "Barcelona",
-      fora: "Real Madrid",
-      horario: "20:00",
-      transmissao: "ESPN e Disney+",
-      logoCasa: "https://media.api-sports.io/football/teams/529.png",
-      logoFora: "https://media.api-sports.io/football/teams/541.png",
-    },
-    {
-      liga: "🏴 Premier League",
-      casa: "Liverpool",
-      fora: "Manchester City",
-      horario: "21:00",
-      transmissao: "ESPN e Disney+",
-      logoCasa: "https://media.api-sports.io/football/teams/40.png",
-      logoFora: "https://media.api-sports.io/football/teams/50.png",
-    },
-    {
-      liga: "🇮🇹 Serie A",
-      casa: "Inter",
-      fora: "Juventus",
-      horario: "21:45",
-      transmissao: "ESPN e Disney+",
-      logoCasa: "https://media.api-sports.io/football/teams/505.png",
-      logoFora: "https://media.api-sports.io/football/teams/496.png",
-    },
-    {
-      liga: "🇩🇪 Bundesliga",
-      casa: "Bayern",
-      fora: "Dortmund",
-      horario: "22:00",
-      transmissao: "GOAT",
-      logoCasa: "https://media.api-sports.io/football/teams/157.png",
-      logoFora: "https://media.api-sports.io/football/teams/165.png",
-    },
-    {
-      liga: "🏆 Sul-Americana",
-      casa: "Grêmio",
-      fora: "Internacional",
-      horario: "22:30",
-      transmissao: "Paramount+",
-      logoCasa: "https://media.api-sports.io/football/teams/119.png",
-      logoFora: "https://media.api-sports.io/football/teams/120.png",
-    },
-  ];
+const LIGAS_PERMITIDAS = [
+  71,  // Brasileirão Série A
+  72,  // Brasileirão Série B
+  73,  // Copa do Brasil
+  13,  // Libertadores
+  11,  // Sul-Americana
+  268, // Série D
+  239, // Campeonato Chileno
+  270, // Campeonato Uruguaio
+];
 
-  return NextResponse.json(jogos);
+export async function GET(req: NextRequest) {
+  try {
+    const dia =
+      req.nextUrl.searchParams.get("dia") || "hoje";
+
+    const data = new Date();
+
+    if (dia === "amanha") {
+      data.setDate(data.getDate() + 1);
+    }
+
+    const dataFormatada =
+      data.toISOString().split("T")[0];
+
+    const response = await fetch(
+      `https://v3.football.api-sports.io/fixtures?date=${dataFormatada}`,
+      {
+        headers: {
+          "x-apisports-key":
+            process.env.API_FOOTBALL_KEY || "",
+        },
+        cache: "no-store",
+      }
+    );
+
+    const json = await response.json();
+
+    const jogos =
+      json?.response
+        ?.filter((jogo: any) => {
+          const nomeLiga =
+            jogo.league?.name || "";
+
+          const idLiga =
+            jogo.league?.id || 0;
+
+          const bloqueado =
+            nomeLiga.includes("Women") ||
+            nomeLiga.includes("Feminino") ||
+            nomeLiga.includes("U15") ||
+            nomeLiga.includes("U16") ||
+            nomeLiga.includes("U17") ||
+            nomeLiga.includes("U18") ||
+            nomeLiga.includes("U19") ||
+            nomeLiga.includes("U20") ||
+            nomeLiga.includes("U21");
+
+          return (
+            !bloqueado &&
+            LIGAS_PERMITIDAS.includes(idLiga)
+          );
+        })
+        .map((jogo: any) => ({
+          liga: `🏆 ${jogo.league.name}`,
+          casa: jogo.teams.home.name,
+          fora: jogo.teams.away.name,
+          horario: new Date(
+            jogo.fixture.date
+          ).toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          transmissao: "",
+          logoCasa:
+            jogo.teams.home.logo,
+          logoFora:
+            jogo.teams.away.logo,
+        }))
+        .sort((a: any, b: any) =>
+          a.horario.localeCompare(
+            b.horario
+          )
+        ) || [];
+
+    return NextResponse.json(jogos);
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json([]);
+  }
 }
