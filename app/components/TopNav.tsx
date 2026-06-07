@@ -82,7 +82,7 @@ export default function TopNav() {
           fontSize: "14px"
         }}
       >
-        DIOWPLAY PRO
+        gerador.diowplay
       </div>
 
     </div>
