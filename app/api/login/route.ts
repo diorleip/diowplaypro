@@ -51,9 +51,9 @@ export async function POST(req: Request) {
     }
 
     const token = createToken(
-      user.id,
-      user.role
-    );
+  user.id,
+  user.role || "USER"
+);
 
     const cookieStore = await cookies();
 
