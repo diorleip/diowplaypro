@@ -15,7 +15,7 @@ export async function GET() {
     if (!token) {
       return NextResponse.json({
         username: null,
-        role: null,
+        perfil: null,
       });
     }
 
@@ -24,6 +24,7 @@ export async function GET() {
       SECRET
     ) as {
       id: string;
+      perfil: string;
     };
 
     const user = await prisma.user.findUnique({
@@ -32,20 +33,20 @@ export async function GET() {
       },
       select: {
         username: true,
-        role: true,
+        perfil: true,
       },
     });
 
     return NextResponse.json({
       username: user?.username || null,
-      perfil: user?.role || "USER",
+      perfil: user?.perfil || "USER",
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return NextResponse.json({
       username: null,
-      role: null,
+      perfil: null,
     });
   }
 }

@@ -14,18 +14,18 @@ export async function POST(req: Request) {
       });
     }
 
-const user = await prisma.user.findUnique({
-  where: {
-    username: body.username,
-  },
-  select: {
-    id: true,
-    username: true,
-    password: true,
-    status: true,
-    role: true,
-  },
-});
+    const user = await prisma.user.findUnique({
+      where: {
+        username: body.username,
+      },
+      select: {
+        id: true,
+        username: true,
+        password: true,
+        status: true,
+        perfil: true,
+      },
+    });
 
     if (!user) {
       return NextResponse.json({
@@ -51,19 +51,25 @@ const user = await prisma.user.findUnique({
     }
 
     const token = createToken(
-  user.id,
-  user.role
-);
+      user.id,
+      user.perfil
+    );
 
     const cookieStore = await cookies();
 
-    cookieStore.set("diow_user", token);
+    cookieStore.set("diow_user", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
 
     return NextResponse.json({
       success: true,
     });
   } catch (error) {
-    console.log(error);
+    console.error("LOGIN ERROR:", error);
 
     return NextResponse.json({
       error: "Erro interno no login",
