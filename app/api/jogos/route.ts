@@ -1,16 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const LIGAS_PERMITIDAS = [
-  71,  // Brasileirão Série A
-  72,  // Brasileirão Série B
-  73,  // Copa do Brasil
-  13,  // Libertadores
-  11,  // Sul-Americana
-  268, // Série D
-  239, // Campeonato Chileno
-  270, // Campeonato Uruguaio
-];
-
 export async function GET(req: NextRequest) {
   try {
     const dia =
@@ -22,8 +11,9 @@ export async function GET(req: NextRequest) {
       data.setDate(data.getDate() + 1);
     }
 
-    const dataFormatada =
-      data.toISOString().split("T")[0];
+    const dataFormatada = data
+      .toISOString()
+      .split("T")[0];
 
     const response = await fetch(
       `https://v3.football.api-sports.io/fixtures?date=${dataFormatada}`,
@@ -38,52 +28,44 @@ export async function GET(req: NextRequest) {
 
     const json = await response.json();
 
-    const jogos =
-      json?.response
-        ?.filter((jogo: any) => {
-          const nomeLiga =
-            jogo.league?.name || "";
+    if (!json.response) {
+      return NextResponse.json([]);
+    }
 
-          const idLiga =
-            jogo.league?.id || 0;
+    const jogos = json.response
+      .filter((jogo: any) => {
+        const liga =
+          jogo.league?.name?.toLowerCase() || "";
 
-          const bloqueado =
-            nomeLiga.includes("Women") ||
-            nomeLiga.includes("Feminino") ||
-            nomeLiga.includes("U15") ||
-            nomeLiga.includes("U16") ||
-            nomeLiga.includes("U17") ||
-            nomeLiga.includes("U18") ||
-            nomeLiga.includes("U19") ||
-            nomeLiga.includes("U20") ||
-            nomeLiga.includes("U21");
-
-          return (
-            !bloqueado &&
-            LIGAS_PERMITIDAS.includes(idLiga)
-          );
-        })
-        .map((jogo: any) => ({
-          liga: `🏆 ${jogo.league.name}`,
-          casa: jogo.teams.home.name,
-          fora: jogo.teams.away.name,
-          horario: new Date(
-            jogo.fixture.date
-          ).toLocaleTimeString("pt-BR", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          transmissao: "",
-          logoCasa:
-            jogo.teams.home.logo,
-          logoFora:
-            jogo.teams.away.logo,
-        }))
-        .sort((a: any, b: any) =>
-          a.horario.localeCompare(
-            b.horario
-          )
-        ) || [];
+        return (
+          !liga.includes("women") &&
+          !liga.includes("feminino") &&
+          !liga.includes("u15") &&
+          !liga.includes("u16") &&
+          !liga.includes("u17") &&
+          !liga.includes("u18") &&
+          !liga.includes("u19") &&
+          !liga.includes("u20") &&
+          !liga.includes("u21")
+        );
+      })
+      .map((jogo: any) => ({
+        liga: `🏆 ${jogo.league.name}`,
+        casa: jogo.teams.home.name,
+        fora: jogo.teams.away.name,
+        horario: new Date(
+          jogo.fixture.date
+        ).toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        transmissao: "",
+        logoCasa: jogo.teams.home.logo,
+        logoFora: jogo.teams.away.logo,
+      }))
+      .sort((a: any, b: any) =>
+        a.horario.localeCompare(b.horario)
+      );
 
     return NextResponse.json(jogos);
   } catch (error) {
