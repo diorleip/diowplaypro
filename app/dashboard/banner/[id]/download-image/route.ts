@@ -1,59 +1,43 @@
+import { NextRequest } from "next/server";
+
 export async function GET(
-  req: Request
+  request: NextRequest
 ) {
-  try {
-    const { searchParams } =
-      new URL(req.url);
+  const { searchParams } =
+    new URL(request.url);
 
-    const url =
-      searchParams.get("url");
+  const path =
+    searchParams.get("path");
 
-    if (!url) {
-      return new Response(
-        "URL não encontrada",
-        {
-          status: 400,
-        }
-      );
-    }
-
-    const imageResponse =
-      await fetch(url);
-
-    if (!imageResponse.ok) {
-      return new Response(
-        "Erro ao baixar imagem",
-        {
-          status: 500,
-        }
-      );
-    }
-
-    const arrayBuffer =
-      await imageResponse.arrayBuffer();
-
+  if (!path) {
     return new Response(
-      arrayBuffer,
+      "Imagem não encontrada",
       {
-        headers: {
-          "Content-Type":
-            imageResponse.headers.get(
-              "content-type"
-            ) || "image/jpeg",
-
-          "Content-Disposition":
-            'attachment; filename="banner.jpg"',
-        },
-      }
-    );
-  } catch (error) {
-    console.log(error);
-
-    return new Response(
-      "Erro interno",
-      {
-        status: 500,
+        status: 404,
       }
     );
   }
+
+  const imageUrl = `https://image.tmdb.org/t/p/original${path}`;
+
+  const response =
+    await fetch(imageUrl);
+
+  const arrayBuffer =
+    await response.arrayBuffer();
+
+  return new Response(
+    arrayBuffer,
+    {
+      headers: {
+        "Content-Type":
+          response.headers.get(
+            "Content-Type"
+          ) || "image/jpeg",
+
+        "Access-Control-Allow-Origin":
+          "*",
+      },
+    }
+  );
 }

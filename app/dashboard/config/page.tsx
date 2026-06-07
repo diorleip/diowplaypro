@@ -11,6 +11,8 @@ export default function ConfigPage() {
 
   const [contact, setContact] = useState("");
   const [logo, setLogo] = useState<string | null>(null);
+  const [telegramChatId, setTelegramChatId] =
+  useState("");
 
   // NOVO
   const [removeBackground, setRemoveBackground] = useState(false);
@@ -18,6 +20,10 @@ export default function ConfigPage() {
   useEffect(() => {
     const savedContact = localStorage.getItem("diow_contact");
     const savedLogo = localStorage.getItem("diow_logo");
+    const savedTelegram =
+  localStorage.getItem(
+    "diow_telegram_chat_id"
+  );
 
     // NOVO
     const savedRemoveBg = localStorage.getItem(
@@ -27,6 +33,11 @@ export default function ConfigPage() {
     if (savedContact) {
       setContact(savedContact);
     }
+    if (savedTelegram) {
+  setTelegramChatId(
+    savedTelegram
+  );
+}
 
     if (savedLogo) {
       setLogo(savedLogo);
@@ -40,6 +51,10 @@ export default function ConfigPage() {
 
   function saveConfig() {
     localStorage.setItem("diow_contact", contact);
+    localStorage.setItem(
+  "diow_telegram_chat_id",
+  telegramChatId
+);
 
     // NOVO
     localStorage.setItem(
@@ -196,6 +211,31 @@ export default function ConfigPage() {
 
           </div>
 
+          {/* TELEGRAM */}
+<div className="mt-14">
+
+  <h2 className="text-3xl font-black text-cyan-400 mb-6">
+    Telegram
+  </h2>
+
+  <input
+    type="text"
+    value={telegramChatId}
+    onChange={(e) =>
+      setTelegramChatId(
+        e.target.value
+      )
+    }
+    placeholder="-1003928092121"
+    className="w-full h-[75px] rounded-2xl bg-black/40 border border-cyan-400/20 px-6 text-2xl outline-none focus:border-cyan-400"
+  />
+
+  <p className="text-white/50 text-lg mt-4">
+    ID do canal ou grupo que receberá os banners automaticamente.
+  </p>
+
+</div>
+
           {/* REMOVER FUNDO */}
           <div className="mt-14">
 
@@ -246,6 +286,17 @@ export default function ConfigPage() {
             </h2>
 
             <div className="space-y-4 text-xl">
+              <div className="flex items-center gap-3">
+  <span>
+    {telegramChatId
+      ? "🟢"
+      : "🟡"}
+  </span>
+
+  <p>
+    Telegram configurado para receber banners
+  </p>
+</div>
 
               <div className="flex items-center gap-3">
                 <span>

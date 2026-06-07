@@ -12,7 +12,7 @@ export async function POST(
 
     telegramForm.append(
       "chat_id",
-      "-1003928092121"
+      body.chatId
     );
 
     telegramForm.append(
@@ -22,7 +22,7 @@ export async function POST(
 
     telegramForm.append(
       "caption",
-      body.caption
+      body.caption || ""
     );
 
     const response =
@@ -37,13 +37,11 @@ export async function POST(
     const data =
       await response.json();
 
-    console.log(data);
-
     return NextResponse.json(
       data
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return NextResponse.json({
       ok: false,

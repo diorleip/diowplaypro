@@ -1,618 +1,217 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import Link from "next/link";
 
-import {
-  ClipboardList,
-  ArrowLeft,
-  Copy,
-  MessageCircle,
-  Send,
-} from "lucide-react";
-
-// API FOOTBALL
-const API_KEY =
-  "4191b1b51509e0b8a929503e0d7ba8e3";
-
-// TELEGRAM
-const TELEGRAM_BOT_TOKEN =
-  "8281514496:AAH08eOOHLPoQwYiPVu8JHu1DJJgJ8NBb8I";
-
-const TELEGRAM_CHAT_ID =
-  "-1003928092121";
-
-// LIGAS IMPORTANTES
-const leagues = [
-  71,   // Brasileirão
-  72,   // Série B
-  39,   // Premier League
-  140,  // La Liga
-  78,   // Bundesliga
-  61,   // Ligue 1
-  135,  // Serie A
-  2,    // Champions
-  3,    // Europa League
-  848,  // Conference League
-  13,   // Libertadores
-  11,   // Sudamericana
-  88,   // Eredivisie
-  94,   // Primeira Liga
-  307,  // Saudi League
-  203,  // Superliga Turca
-  253,  // MLS
-  292,  // J League
-];
-
 export default function GuiaFutebolPage() {
-  const [activeTab, setActiveTab] =
-    useState("today");
+  const [jogos, setJogos] = useState<any[]>([]);
+  const [textoGuia, setTextoGuia] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [tipo, setTipo] = useState<"hoje" | "amanha">("hoje");
 
-  const [loading, setLoading] =
-    useState(true);
-
-  const [todayGames, setTodayGames] =
-    useState("");
-
-  const [tomorrowGames, setTomorrowGames] =
-    useState("");
-
-  // FORMATO BRASIL
-  function formatDateBR(
-    date: Date
-  ) {
-    const brasilDate =
-      new Date(
-        date.toLocaleString(
-          "en-US",
-          {
-            timeZone:
-              "America/Sao_Paulo",
-          }
-        )
-      );
-
-    const year =
-      brasilDate.getFullYear();
-
-    const month = String(
-      brasilDate.getMonth() + 1
-    ).padStart(2, "0");
-
-    const day = String(
-      brasilDate.getDate()
-    ).padStart(2, "0");
-
-    return `${year}-${month}-${day}`;
-  }
-
-  // DATA VISUAL BR
-  function visualDateBR(
-    date: Date
-  ) {
-    return date.toLocaleDateString(
-      "pt-BR",
-      {
-        timeZone:
-          "America/Sao_Paulo",
-      }
-    );
-  }
-
-  // CARREGAR
   useEffect(() => {
-    fetchGames();
+    buscarJogos("hoje");
   }, []);
 
-  // TELEGRAM 18H BRASIL
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const brasilNow =
-        new Date(
-          new Date().toLocaleString(
-            "en-US",
-            {
-              timeZone:
-                "America/Sao_Paulo",
-            }
-          )
-        );
-
-      const hour =
-        brasilNow.getHours();
-
-      const minute =
-        brasilNow.getMinutes();
-
-      const todayKey =
-        brasilNow.toLocaleDateString(
-          "pt-BR"
-        );
-
-      const sentToday =
-        localStorage.getItem(
-          "diow_sent_today"
-        );
-
-      if (
-        hour === 18 &&
-        minute === 0 &&
-        sentToday !== todayKey &&
-        todayGames
-      ) {
-        sendTelegram(todayGames);
-
-        localStorage.setItem(
-          "diow_sent_today",
-          todayKey
-        );
-      }
-    }, 60000);
-
-    return () =>
-      clearInterval(interval);
-  }, [todayGames]);
-
-  // BUSCAR JOGOS
-  async function fetchGames() {
+  async function buscarJogos(
+    dia: "hoje" | "amanha"
+  ) {
     try {
       setLoading(true);
+      setTipo(dia);
 
-      const today = new Date("2026-05-16");
+      const response = await fetch(
+        `/api/jogos?dia=${dia}`
+      );
 
-const tomorrow = new Date(today);
+      const data = await response.json();
 
-tomorrow.setDate(
-  today.getDate() + 1
-);
+      setJogos(data);
 
-      const todayDate =
-        formatDateBR(today);
+      const dataTexto = new Date();
 
-      const tomorrowDate =
-        formatDateBR(tomorrow);
-
-      // BUSCAR LIGA
-      async function getLeagueGames(
-        league: number,
-        date: string
-      ) {
-        try {
-          const response = await fetch(
-            `https://v3.football.api-sports.io/fixtures?league=${league}&date=${date}`,
-            {
-              headers: {
-                "x-apisports-key":
-                  API_KEY,
-              },
-            }
-          );
-
-          const data =
-            await response.json();
-
-          // FALLBACK
-          if (
-            !data.response ||
-            data.response.length === 0
-          ) {
-            return {
-              response: [],
-            };
-          }
-
-          return data;
-        } catch (error) {
-          console.log(error);
-
-          return {
-            response: [],
-          };
-        }
-      }
-
-      // TODAS LIGAS
-      async function getAllGames(
-        date: string
-      ) {
-        const requests =
-          leagues.map((league) =>
-            getLeagueGames(
-              league,
-              date
-            )
-          );
-
-        const results =
-          await Promise.all(
-            requests
-          );
-
-        let matches: any[] = [];
-
-        results.forEach((item) => {
-          if (
-            item.response &&
-            item.response.length > 0
-          ) {
-            matches = [
-              ...matches,
-              ...item.response,
-            ];
-          }
-        });
-
-        return matches;
-      }
-
-      // HOJE
-      const todayMatches =
-        await getAllGames(
-          todayDate
+      if (dia === "amanha") {
+        dataTexto.setDate(
+          dataTexto.getDate() + 1
         );
-
-      // AMANHÃ
-      const tomorrowMatches =
-        await getAllGames(
-          tomorrowDate
-        );
-
-      // FORMATAR
-      setTodayGames(
-        buildText(
-          todayMatches,
-          "JOGOS DE HOJE",
-          visualDateBR(today)
-        )
-      );
-
-      setTomorrowGames(
-        buildText(
-          tomorrowMatches,
-          "JOGOS DE AMANHÃ",
-          visualDateBR(tomorrow)
-        )
-      );
-    } catch (error) {
-      console.log(error);
-    }
-
-    setLoading(false);
-  }
-
-  // CANAIS
-  function getChannel(
-    league: string
-  ) {
-    if (
-      league.includes(
-        "Serie A"
-      )
-    ) {
-      return "PREMIERE FC";
-    }
-
-    if (
-      league.includes(
-        "Premier League"
-      )
-    ) {
-      return "ESPN/DISNEY+";
-    }
-
-    if (
-      league.includes(
-        "La Liga"
-      )
-    ) {
-      return "ESPN 4";
-    }
-
-    if (
-      league.includes(
-        "Bundesliga"
-      )
-    ) {
-      return "CANAL GOAT";
-    }
-
-    if (
-      league.includes(
-        "Champions"
-      )
-    ) {
-      return "TNT SPORTS/HBO MAX";
-    }
-
-    if (
-      league.includes(
-        "Libertadores"
-      )
-    ) {
-      return "PARAMOUNT+";
-    }
-
-    return "ESPN";
-  }
-
-  // FORMATAR TEXTO
-  function buildText(
-    matches: any[],
-    title: string,
-    date: string
-  ) {
-    let text = `📆 | *${title} - ${date}*\n`;
-
-    text +=
-      "━━━━━━━━━━━━━━━━━━\n";
-
-    if (
-      !matches ||
-      matches.length === 0
-    ) {
-      text +=
-        "\nNenhum jogo encontrado.\n\n";
-
-      text +=
-        "No Diow Play🚀 você assiste todos os jogos sem travamentos🔥";
-
-      return text;
-    }
-
-    // ORDENAR
-    matches.sort(
-      (a, b) =>
-        new Date(
-          a.fixture.date
-        ).getTime() -
-        new Date(
-          b.fixture.date
-        ).getTime()
-    );
-
-    let currentLeague = "";
-
-    matches.forEach((game) => {
-      const league =
-        game.league.name;
-
-      // NOVA LIGA
-      if (
-        currentLeague !== league
-      ) {
-        currentLeague = league;
-
-        text += `🏆 *${league.toUpperCase()}*\n`;
       }
 
-      // HORÁRIO BRASIL
-      const time = new Date(
-        game.fixture.date
-      ).toLocaleTimeString(
-        "pt-BR",
-        {
-          timeZone:
-            "America/Sao_Paulo",
+      let texto =
+        `📅 JOGOS DE ${
+          dia === "hoje"
+            ? "HOJE"
+            : "AMANHÃ"
+        } - ${dataTexto.toLocaleDateString(
+          "pt-BR"
+        )}\n`;
 
-          hour: "2-digit",
+      texto +=
+        "━━━━━━━━━━━━━━━━━━\n\n";
 
-          minute: "2-digit",
-        }
-      );
+      data.forEach((jogo: any) => {
+        const liga = jogo.liga
+          .replace("🇧🇷 ", "")
+          .replace("🇺🇾 ", "")
+          .replace("🇨🇱 ", "")
+          .replace("🇧🇴 ", "")
+          .replace("🇨🇦 ", "")
+          .replace("🌎 ", "")
+          .replace("🏆 ", "");
 
-      // TIMES
-      const home =
-        game.teams.home.name;
+        texto += `🏆 ${liga.toUpperCase()}\n`;
+        texto += `⚽ ${jogo.casa} x ${jogo.fora}\n`;
+        texto += `🕒 ${jogo.horario}\n`;
+        texto +=
+          "━━━━━━━━━━━━━━━━━━\n";
+      });
 
-      const away =
-        game.teams.away.name;
+      texto +=
+        "\n🔥 Todos os jogos disponíveis no Diow Play 🚀";
 
-      // CANAL
-      const channel =
-        getChannel(league);
-
-      text += `⚽ *${home}* x *${away}*\n`;
-
-      text += `⏰ ${time}\n`;
-
-      text += `📺 ${channel}\n`;
-
-      text +=
-        "━━━━━━━━━━━━━━━━━━\n";
-    });
-
-    // FINAL
-    text +=
-      "No Diow Play🚀 você assiste todos os jogos sem travamentos🔥";
-
-    return text;
-  }
-
-  // TELEGRAM
-  async function sendTelegram(
-    text: string
-  ) {
-    try {
-      await fetch(
-        `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
-          body: JSON.stringify({
-            chat_id:
-              TELEGRAM_CHAT_ID,
-
-            text,
-
-            parse_mode:
-              "Markdown",
-          }),
-        }
-      );
+      setTextoGuia(texto);
     } catch (error) {
-      console.log(error);
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   }
 
-  // ENVIAR AGORA
-  async function sendNow() {
-    await sendTelegram(
-      currentText
+  async function copiarTexto() {
+    await navigator.clipboard.writeText(
+      textoGuia
     );
 
-    alert(
-      "Enviado para o Telegram!"
-    );
+    alert("Guia copiado com sucesso!");
   }
 
-  const currentText =
-    activeTab === "today"
-      ? todayGames
-      : tomorrowGames;
-
-  // COPIAR
-  function copyText() {
-    navigator.clipboard.writeText(
-      currentText
-    );
-
-    alert("Texto copiado!");
-  }
-
-  // WHATS
-  function sendWhatsApp() {
-    const text =
-      encodeURIComponent(
-        currentText
-      );
-
+  function enviarWhatsapp() {
     window.open(
-      `https://wa.me/?text=${text}`,
+      `https://wa.me/?text=${encodeURIComponent(
+        textoGuia
+      )}`,
       "_blank"
     );
   }
 
-  return (
-    <main className="min-h-screen bg-[#020817] p-4 text-white">
-      {/* HEADER */}
-      <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-500">
-            <ClipboardList
-              size={20}
-              className="text-white"
-            />
-          </div>
+  const destaques = jogos
+    .filter(
+      (jogo) =>
+        jogo.liga?.includes(
+          "Brasileirão Série A"
+        ) ||
+        jogo.liga?.includes(
+          "Libertadores"
+        ) ||
+        jogo.liga?.includes(
+          "Sul-Americana"
+        ) ||
+        jogo.liga?.includes(
+          "Amistosos Seleções"
+        )
+    )
+    .slice(0, 5);
 
-          <div>
-            <h1 className="text-lg font-bold">
-              Guia Futebol
+  return (
+    <div className="min-h-screen bg-[#030817] p-2">
+      <div className="max-w-[600px] mx-auto">
+        <div className="bg-gradient-to-b from-[#0b63b6] to-[#1389f3] rounded-[24px] p-4 shadow-[0_0_30px_rgba(0,180,255,0.25)]">
+
+          <div className="flex items-center justify-between mb-4">
+            <Link
+              href="/dashboard"
+              className="bg-[#0b4f8d] px-3 py-2 rounded-xl text-white font-bold text-xs"
+            >
+              ← Dashboard
+            </Link>
+
+            <h1 className="text-lg font-extrabold text-white">
+              ⚽ Guia Futebol
             </h1>
 
-            <p className="text-xs text-zinc-400">
-              Jogos automáticos
-            </p>
+            <div className="w-[70px]" />
           </div>
-        </div>
 
-        <Link
-          href="/dashboard"
-          className="flex items-center gap-2 rounded-xl border border-cyan-400/20 bg-cyan-500/10 px-4 py-2 text-xs font-semibold text-cyan-300 transition-all hover:bg-cyan-500/20"
-        >
-          <ArrowLeft size={15} />
-          Dashboard
-        </Link>
-      </div>
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            <button
+              onClick={() =>
+                buscarJogos("hoje")
+              }
+              className={`rounded-xl py-2 text-sm font-bold text-white ${
+                tipo === "hoje"
+                  ? "bg-cyan-500"
+                  : "bg-[#0b4f8d]"
+              }`}
+            >
+              Hoje
+            </button>
 
-      {/* BOX */}
-      <div className="mx-auto max-w-[620px] rounded-[30px] border border-cyan-400/20 bg-gradient-to-b from-[#0f6dc0] to-[#1593ff] p-5 shadow-[0_0_40px_rgba(0,174,255,0.2)]">
-        {/* TITULO */}
-        <div className="text-center">
-          <h1 className="text-2xl font-black">
-            ⚽ GERADOR DE JOGOS ⚽
-          </h1>
+            <button
+              onClick={() =>
+                buscarJogos("amanha")
+              }
+              className={`rounded-xl py-2 text-sm font-bold text-white ${
+                tipo === "amanha"
+                  ? "bg-cyan-500"
+                  : "bg-[#0b4f8d]"
+              }`}
+            >
+              Amanhã
+            </button>
+          </div>
 
-          <div className="mx-auto mt-4 h-1 w-24 rounded-full bg-cyan-300" />
-        </div>
+          {destaques.length > 0 && (
+            <div className="bg-[#0b4f8d] rounded-2xl p-3 mb-4">
+              <h2 className="text-yellow-300 font-bold mb-3">
+                🔥 Destaques do Dia
+              </h2>
 
-        {/* TABS */}
-        <div className="mt-6 grid grid-cols-2 gap-3">
-          <button
-            onClick={() =>
-              setActiveTab("today")
-            }
-            className={`rounded-2xl px-4 py-3 text-sm font-bold transition-all ${
-              activeTab ===
-              "today"
-                ? "bg-cyan-400 text-white"
-                : "bg-[#0f6dc0]"
-            }`}
-          >
-            Jogos de Hoje
-          </button>
+              {destaques.map(
+                (jogo, index) => (
+                  <div
+                    key={index}
+                    className="text-white text-sm border-b border-white/10 pb-2 mb-2"
+                  >
+                    <div className="font-bold">
+                      ⚽ {jogo.casa} x {jogo.fora}
+                    </div>
 
-          <button
-            onClick={() =>
-              setActiveTab(
-                "tomorrow"
-              )
-            }
-            className={`rounded-2xl px-4 py-3 text-sm font-bold transition-all ${
-              activeTab ===
-              "tomorrow"
-                ? "bg-cyan-400 text-white"
-                : "bg-[#0f6dc0]"
-            }`}
-          >
-            Jogos de Amanhã
-          </button>
-        </div>
-
-        {/* TEXTO */}
-        <div className="mt-5 rounded-2xl bg-[#07569b] p-4">
-          {loading ? (
-            <div className="py-20 text-center text-sm">
-              Buscando jogos...
+                    <div className="text-cyan-300">
+                      🕒 {jogo.horario}
+                    </div>
+                  </div>
+                )
+              )}
             </div>
-          ) : (
-            <textarea
-              value={currentText}
-              readOnly
-              className="h-[340px] w-full resize-none rounded-xl bg-transparent text-xs leading-relaxed text-white outline-none"
-            />
           )}
-        </div>
 
-        {/* BOTÕES */}
-        <div className="mt-5 grid grid-cols-3 gap-3">
-          <button
-            onClick={copyText}
-            className="rounded-2xl bg-[#0f6dc0] px-4 py-4 text-xs font-bold"
-          >
-            Copiar
-          </button>
+          <div className="bg-[#0b4f8d] rounded-2xl p-3 h-[420px] overflow-y-auto text-white whitespace-pre-line text-[12px] leading-[20px]">
 
-          <button
-            onClick={sendWhatsApp}
-            className="rounded-2xl bg-[#0f6dc0] px-4 py-4 text-xs font-bold"
-          >
-            Whats
-          </button>
+            {loading
+              ? "Carregando jogos..."
+              : textoGuia}
 
-          <button
-            onClick={sendNow}
-            className="rounded-2xl bg-cyan-500 px-4 py-4 text-xs font-bold"
-          >
-            Telegram
-          </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 mt-4">
+
+            <button
+              onClick={copiarTexto}
+              className="bg-[#0b4f8d] rounded-xl py-2 text-white font-bold text-sm"
+            >
+              📋 Copiar
+            </button>
+
+            <button
+              onClick={enviarWhatsapp}
+              className="bg-green-600 rounded-xl py-2 text-white font-bold text-sm"
+            >
+              💬 WhatsApp
+            </button>
+
+          </div>
+
         </div>
       </div>
-    </main>
+    </div>
   );
 }
