@@ -23,7 +23,7 @@ export async function POST(req: Request) {
         username: true,
         password: true,
         status: true,
-        perfil: true,
+        role: true,
       },
     });
 
@@ -52,7 +52,7 @@ export async function POST(req: Request) {
 
     const token = createToken(
       user.id,
-      user.perfil
+      user.role
     );
 
     const cookieStore = await cookies();

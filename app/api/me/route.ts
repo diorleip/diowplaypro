@@ -33,13 +33,13 @@ export async function GET() {
       },
       select: {
         username: true,
-        perfil: true,
+        role: true,
       },
     });
 
     return NextResponse.json({
       username: user?.username || null,
-      perfil: user?.perfil || "USER",
+      perfil: user?.role || "USER",
     });
   } catch (error) {
     console.error(error);
