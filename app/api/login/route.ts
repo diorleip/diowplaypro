@@ -14,15 +14,28 @@ export async function POST(req: Request) {
       });
     }
 
-    const user = await prisma.user.findUnique({
-      where: {
-        username: body.username,
-      },
-    });
+const user = await prisma.user.findUnique({
+  where: {
+    username: body.username,
+  },
+  select: {
+    id: true,
+    username: true,
+    password: true,
+    status: true,
+    role: true,
+  },
+});
 
     if (!user) {
       return NextResponse.json({
         error: "Usuário não encontrado",
+      });
+    }
+
+    if (user.status !== "ATIVO") {
+      return NextResponse.json({
+        error: "Sua conta ainda não foi aprovada",
       });
     }
 
@@ -37,7 +50,10 @@ export async function POST(req: Request) {
       });
     }
 
-    const token = createToken(user.id);
+    const token = createToken(
+  user.id,
+  user.role
+);
 
     const cookieStore = await cookies();
 

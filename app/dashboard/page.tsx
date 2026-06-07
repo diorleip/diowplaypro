@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
 import {
   Home,
   Settings,
@@ -8,6 +10,7 @@ import {
   Trophy,
   Send,
   Users,
+  UserCog,
   MessageCircle,
   Crown,
   PlayCircle,
@@ -24,6 +27,11 @@ const sidebarItems = [
     href: "/dashboard",
     icon: Home,
   },
+  {
+  title: "Usuários",
+  href: "/dashboard/usuarios",
+  icon: UserCog,
+},
 
   {
     title: "Chamar suporte",
@@ -133,6 +141,14 @@ const dashboardCards = [
   },
 
   {
+  title: "Usuários",
+  subtitle: "Gerencie acessos ao painel",
+  href: "/dashboard/usuarios",
+  color: "bg-indigo-500",
+  icon: UserCog,
+},
+
+  {
     title: "Configuração",
     subtitle:
       "cadastre sua logo e contato",
@@ -159,6 +175,33 @@ const dashboardCards = [
 ];
 
 export default function DashboardPage() {
+  const [username, setUsername] =
+useState("");
+
+const [role,setrole,] =
+useState("USER");
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const req = await fetch("/api/me");
+
+        const data = await req.json();
+
+if (data?.username) {
+  setUsername(data.username);
+}
+
+if (data?.perfil) {
+  setrole(data.perfil);
+}
+      } catch {
+        setUsername("Usuário");
+      }
+    }
+
+    loadUser();
+  }, []);
   // DATA LOGIN
   let createdAt =
     typeof window !== "undefined"
@@ -248,7 +291,24 @@ export default function DashboardPage() {
         {/* MENU */}
         <div className="flex-1 overflow-y-auto p-2">
           <div className="space-y-1">
-            {sidebarItems.map((item) => {
+            {sidebarItems
+  .filter((item) => {
+    if (
+      [
+  "Usuários",
+  "Clientes",
+  "Revendas",
+  "Link de indicação",
+].includes(
+        item.title
+      )
+    ) {
+      return role === "ADMIN";
+    }
+
+    return true;
+  })
+  .map((item) => {
               const Icon = item.icon;
 
               return (
@@ -284,21 +344,50 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* VENCIMENTO */}
-          <div
-            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-semibold ${statusColor}`}
-          >
-            <CalendarDays size={16} />
+<div className="rounded-2xl border border-cyan-500/20 bg-[#0b1228] px-5 py-3">
+  <div className="flex items-center gap-3">
+    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500">
+      <span className="font-bold text-black">
+        {username?.charAt(0).toUpperCase() || "D"}
+      </span>
+    </div>
 
-            <span>
-              Vence em {diffDays} dias
-            </span>
-          </div>
-        </div>
+    <div>
+      <p className="font-semibold text-cyan-400">
+        {username || "Diow Play"}
+      </p>
 
+    <p className="text-xs text-yellow-400">
+  Role: {role}
+</p>
+
+      <p className="text-xs text-green-400">
+        Plano ativo
+      </p>
+
+      <p className="text-xs text-zinc-400">
+        Vence em {diffDays} dias
+      </p>
+    </div>
+  </div>
+</div>
+</div>
         {/* CARDS */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {dashboardCards.map((item) => {
+          {dashboardCards
+  .filter((item) => {
+    if (
+      [
+        "Usuários",
+        "Link de indicação",
+      ].includes(item.title)
+    ) {
+      return role === "ADMIN";
+    }
+
+    return true;
+  })
+  .map((item) => {
             const Icon = item.icon;
 
             return (
