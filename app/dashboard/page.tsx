@@ -329,64 +329,40 @@ if (data?.perfil) {
         </div>
       </aside>
 
-      {/* SIDEBAR MOBILE */}
-<div
-  className={`fixed inset-0 z-50 md:hidden transition ${
-    sidebarOpen
-      ? "visible"
-      : "invisible"
-  }`}
->
-  <div
-    className={`absolute inset-0 bg-black/60 transition-opacity ${
-      sidebarOpen
-        ? "opacity-100"
-        : "opacity-0"
-    }`}
-    onClick={() =>
-      setSidebarOpen(false)
-    }
-  />
+<div className="p-2 space-y-1">
+  {sidebarItems
+    .filter((item) => {
+      if (
+        [
+          "Clientes",
+          "Revendas",
+          "Link de indicação",
+        ].includes(item.title)
+      ) {
+        return role === "ADMIN";
+      }
 
-  <aside
-  className={`absolute left-0 top-0 h-full w-[260px] bg-[#050b1a] border-r border-cyan-400/10 transform transition-transform duration-300 ${
-    sidebarOpen
-      ? "translate-x-0"
-      : "-translate-x-full"
-  }`}
->
-  <div className="p-4 border-b border-cyan-400/10">
-    <h2 className="font-bold text-cyan-400">
-      Diow Play
-    </h2>
-  </div>
+      return true;
+    })
+    .map((item) => {
+      const Icon = item.icon;
 
-  <div className="p-2 space-y-2">
-    <Link
-      href="/dashboard"
-      onClick={() => setSidebarOpen(false)}
-      className="block rounded-lg p-3 hover:bg-cyan-500/10"
-    >
-      Dashboard
-    </Link>
+      return (
+        <Link
+          key={item.title}
+          href={item.href}
+          onClick={() => setSidebarOpen(false)}
+          className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-zinc-300 transition-all hover:bg-cyan-500/10 hover:text-white"
+        >
+          <Icon
+            size={18}
+            className="text-cyan-400"
+          />
 
-    <Link
-      href="/dashboard/clientes"
-      onClick={() => setSidebarOpen(false)}
-      className="block rounded-lg p-3 hover:bg-cyan-500/10"
-    >
-      Clientes
-    </Link>
-
-    <Link
-      href="/dashboard/config"
-      onClick={() => setSidebarOpen(false)}
-      className="block rounded-lg p-3 hover:bg-cyan-500/10"
-    >
-      Configurações
-    </Link>
-  </div>
-</aside>
+          <span>{item.title}</span>
+        </Link>
+      );
+    })}
 </div>
 
       {/* CONTEÚDO */}
