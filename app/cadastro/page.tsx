@@ -2,13 +2,20 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function CadastroPage() {
-  const searchParams = useSearchParams();
+const [indicadoPor, setIndicadoPor] = useState("");
 
-  const indicadoPor = searchParams.get("ref");
+useEffect(() => {
+  const params = new URLSearchParams(
+    window.location.search
+  );
+
+  setIndicadoPor(
+    params.get("ref") || ""
+  );
+}, []);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
