@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X,
+
+ } from "lucide-react";
 
 import {
   Home,
@@ -262,7 +264,65 @@ if (data?.perfil) {
   const serverOnline = true;
 
   return (
-    <main className="min-h-screen bg-[#020817] text-white">
+  <main className="min-h-screen bg-[#020817] text-white">
+
+    {/* SIDEBAR MOBILE */}
+    <div
+      className={`fixed inset-0 z-50 md:hidden ${
+        sidebarOpen ? "block" : "hidden"
+      }`}
+    >
+      <div
+        className="absolute inset-0 bg-black/60"
+        onClick={() => setSidebarOpen(false)}
+      />
+
+      <aside className="absolute left-0 top-0 h-full w-[260px] bg-[#050b1a] border-r border-cyan-400/10">
+        <div className="border-b border-cyan-400/10 p-4">
+          <h2 className="font-bold text-cyan-400">
+            Diow Play
+          </h2>
+        </div>
+
+        <div className="p-2 space-y-1">
+          {sidebarItems
+            .filter((item) => {
+              if (
+                [
+                  "Clientes",
+                  "Revendas",
+                  "Link de indicação",
+                ].includes(item.title)
+              ) {
+                return role === "ADMIN";
+              }
+
+              return true;
+            })
+            .map((item) => {
+              const Icon = item.icon;
+
+              return (
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  onClick={() =>
+                    setSidebarOpen(false)
+                  }
+                  className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-zinc-300 hover:bg-cyan-500/10"
+                >
+                  <Icon
+                    size={18}
+                    className="text-cyan-400"
+                  />
+
+                  <span>{item.title}</span>
+                </Link>
+              );
+            })}
+        </div>
+      </aside>
+    </div>
             {/* SIDEBAR DESKTOP */}
 <aside className="hidden md:flex fixed left-0 top-0 z-50 h-screen w-[240px] flex-col border-r border-cyan-400/10 bg-[#050b1a]">
 
@@ -329,101 +389,58 @@ if (data?.perfil) {
         </div>
       </aside>
 
-<div className="p-2 space-y-1">
-  {sidebarItems
-    .filter((item) => {
-      if (
-        [
-          "Clientes",
-          "Revendas",
-          "Link de indicação",
-        ].includes(item.title)
-      ) {
-        return role === "ADMIN";
-      }
-
-      return true;
-    })
-    .map((item) => {
-      const Icon = item.icon;
-
-      return (
-        <Link
-          key={item.title}
-          href={item.href}
-          onClick={() => setSidebarOpen(false)}
-          className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm text-zinc-300 transition-all hover:bg-cyan-500/10 hover:text-white"
-        >
-          <Icon
-            size={18}
-            className="text-cyan-400"
-          />
-
-          <span>{item.title}</span>
-        </Link>
-      );
-    })}
-</div>
-
       {/* CONTEÚDO */}
       <section className="p-4 md:ml-[240px] md:p-5">
-        {/* HEADER */}
-        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-cyan-400/10 pb-5">
-          <div>
-            <h1 className="text-2xl font-bold">
-              <div className="flex items-center gap-3">
-  <button
-    onClick={() => setSidebarOpen(true)}
-    className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg bg-[#0b1228] border border-cyan-500/20"
-  >
-    <Menu size={22} />
-  </button>
+{/* HEADER */}
+<div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-cyan-400/10 pb-5">
 
-  <div>
-    <h1 className="text-2xl font-bold">
-      Dashboard
-    </h1>
-
-    <p className="mt-1 text-xs text-zinc-400">
-      Painel Administrativo Diow Play
-    </p>
-  </div>
-</div>
-              Dashboard
-            </h1>
-
-            <p className="mt-1 text-xs text-zinc-400">
-              Painel Administrativo Diow Play
-            </p>
-          </div>
-
-<div className="w-full md:w-auto rounded-2xl border border-cyan-500/20 bg-[#0b1228] px-5 py-3">
   <div className="flex items-center gap-3">
-    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500">
-      <span className="font-bold text-black">
-        {username?.charAt(0).toUpperCase() || "D"}
-      </span>
-    </div>
+    <button
+      onClick={() => setSidebarOpen(true)}
+      className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg bg-[#0b1228] border border-cyan-500/20"
+    >
+      <Menu size={22} />
+    </button>
 
     <div>
-      <p className="font-semibold text-cyan-400">
-        {username || "Diow Play"}
-      </p>
+      <h1 className="text-2xl font-bold">
+        Dashboard
+      </h1>
 
-    <p className="text-xs text-yellow-400">
-  Role: {role}
-</p>
-
-      <p className="text-xs text-green-400">
-        Plano ativo
-      </p>
-
-      <p className="text-xs text-zinc-400">
-        Vence em {diffDays} dias
+      <p className="mt-1 text-xs text-zinc-400">
+        Painel Administrativo Diow Play
       </p>
     </div>
   </div>
-</div>
+
+  <div className="w-full md:w-auto rounded-2xl border border-cyan-500/20 bg-[#0b1228] px-5 py-3">
+    <div className="flex items-center gap-3">
+      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500">
+        <span className="font-bold text-black">
+          {username?.charAt(0).toUpperCase() || "D"}
+        </span>
+      </div>
+
+      <div>
+        <p className="font-semibold text-cyan-400">
+          {username || "Diow Play"}
+        </p>
+
+        <p className="text-xs text-yellow-400">
+          Role: {role}
+        </p>
+
+        <p className="text-xs text-green-400">
+          Plano ativo
+        </p>
+
+        <p className="text-xs text-zinc-400">
+          Vence em {diffDays} dias
+        </p>
+      </div>
+    </div>
+  </div>
+
 </div>
         {/* CARDS */}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
