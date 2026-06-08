@@ -28,6 +28,7 @@
     "prisma": "^5.22.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-hot-toast": "^2.6.0",
     "remotion": "^4.0.459",
     "youtubei.js": "^17.0.1",
     "ytdl-core": "^4.11.5"

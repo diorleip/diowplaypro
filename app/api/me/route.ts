@@ -10,7 +10,7 @@ export async function GET() {
     const cookieStore = await cookies();
 
     const token =
-      cookieStore.get("diow_user")?.value;
+  cookieStore.get("diow_user")?.value;
 
     if (!token) {
       return NextResponse.json({

@@ -148,12 +148,19 @@ export default function LoginPage() {
         </div>
 
         <a
-          href="https://t.me/+uslLfs3-3mM4ODAx"
-          target="_blank"
-          className="mt-6 flex items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-500/10 py-3 text-sm text-cyan-300 transition-all hover:bg-cyan-500/20"
-        >
-          Siga nosso Canal
-        </a>
+  href="/cadastro"
+  className="mt-4 flex items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 py-3 text-sm text-blue-300 transition-all hover:bg-blue-500/20"
+>
+  Criar Conta
+</a>
+
+<a
+  href="https://t.me/+uslLfs3-3mM4ODAx"
+  target="_blank"
+  className="mt-4 flex items-center justify-center rounded-2xl border border-cyan-400/20 bg-cyan-500/10 py-3 text-sm text-cyan-300 transition-all hover:bg-cyan-500/20"
+>
+  Siga nosso Canal
+</a>
 
         <p className="mt-8 text-center text-xs text-zinc-500">
           Feito por Diow 🚀 © 2026 DiowPlay. Todos os direitos reservados.

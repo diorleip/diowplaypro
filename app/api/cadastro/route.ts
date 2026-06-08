@@ -4,7 +4,11 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { username, password } = await req.json();
+    const {
+      username,
+      password,
+      indicadoPor,
+    } = await req.json();
 
     if (!username || !password) {
       return NextResponse.json({
@@ -24,13 +28,18 @@ export async function POST(req: Request) {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(
+      password,
+      10
+    );
 
     await prisma.user.create({
       data: {
         username,
         password: hashedPassword,
         status: "PENDENTE",
+        role: "USER",
+        indicadoPor: indicadoPor || null,
       },
     });
 
