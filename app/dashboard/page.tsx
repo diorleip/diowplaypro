@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Menu, X } from "lucide-react";
 
 import {
   Home,
@@ -173,6 +174,9 @@ export default function DashboardPage() {
   const [username, setUsername] =
 useState("");
 
+const [sidebarOpen, setSidebarOpen] =
+useState(false);
+
 const [role,setrole,] =
 useState("USER");
 
@@ -259,8 +263,9 @@ if (data?.perfil) {
 
   return (
     <main className="min-h-screen bg-[#020817] text-white">
-      {/* SIDEBAR */}
-      <aside className="hidden md:flex fixed left-0 top-0 z-50 h-screen w-[240px] flex-col border-r border-cyan-400/10 bg-[#050b1a]">
+            {/* SIDEBAR DESKTOP */}
+<aside className="hidden md:flex fixed left-0 top-0 z-50 h-screen w-[240px] flex-col border-r border-cyan-400/10 bg-[#050b1a]">
+
         {/* LOGO */}
         <div className="flex items-center gap-3 border-b border-cyan-400/10 p-4">
           <img
@@ -323,6 +328,35 @@ if (data?.perfil) {
           </div>
         </div>
       </aside>
+
+      {/* SIDEBAR MOBILE */}
+<div
+  className={`fixed inset-0 z-50 md:hidden transition ${
+    sidebarOpen
+      ? "visible"
+      : "invisible"
+  }`}
+>
+  <div
+    className={`absolute inset-0 bg-black/60 transition-opacity ${
+      sidebarOpen
+        ? "opacity-100"
+        : "opacity-0"
+    }`}
+    onClick={() =>
+      setSidebarOpen(false)
+    }
+  />
+
+  <aside
+    className={`absolute left-0 top-0 h-full w-[260px] bg-[#050b1a] border-r border-cyan-400/10 transform transition-transform duration-300 ${
+      sidebarOpen
+        ? "translate-x-0"
+               : "-translate-x-full"
+    }`}
+  >
+  </aside>
+</div>
 
       {/* CONTEÚDO */}
       <section className="p-4 md:ml-[240px] md:p-5">
