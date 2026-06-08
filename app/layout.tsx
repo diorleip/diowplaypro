@@ -24,8 +24,7 @@ export default function RootLayout({
           style={{
             width: "100%",
             minHeight: "100vh",
-            zoom: "0.90",
-          }}
+         }}
         >
           {children}
 

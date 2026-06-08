@@ -27,11 +27,6 @@ const sidebarItems = [
     href: "/dashboard",
     icon: Home,
   },
-  {
-  title: "Usuários",
-  href: "/dashboard/usuarios",
-  icon: UserCog,
-},
 
   {
     title: "Chamar suporte",
@@ -140,12 +135,12 @@ const dashboardCards = [
     icon: MessageCircle,
   },
 
-  {
-  title: "Usuários",
-  subtitle: "Gerencie acessos ao painel",
-  href: "/dashboard/usuarios",
+{
+  title: "Clientes",
+  subtitle: "Gerencie seus clientes",
+  href: "/dashboard/clientes",
   color: "bg-indigo-500",
-  icon: UserCog,
+  icon: Users,
 },
 
   {
@@ -265,7 +260,7 @@ if (data?.perfil) {
   return (
     <main className="min-h-screen bg-[#020817] text-white">
       {/* SIDEBAR */}
-      <aside className="fixed left-0 top-0 z-50 flex h-screen w-[240px] flex-col border-r border-cyan-400/10 bg-[#050b1a]">
+      <aside className="hidden md:flex fixed left-0 top-0 z-50 h-screen w-[240px] flex-col border-r border-cyan-400/10 bg-[#050b1a]">
         {/* LOGO */}
         <div className="flex items-center gap-3 border-b border-cyan-400/10 p-4">
           <img
@@ -295,7 +290,6 @@ if (data?.perfil) {
   .filter((item) => {
     if (
       [
-  "Usuários",
   "Clientes",
   "Revendas",
   "Link de indicação",
@@ -331,9 +325,9 @@ if (data?.perfil) {
       </aside>
 
       {/* CONTEÚDO */}
-      <section className="ml-[240px] p-5">
+      <section className="p-4 md:ml-[240px] md:p-5">
         {/* HEADER */}
-        <div className="mb-6 flex items-center justify-between border-b border-cyan-400/10 pb-5">
+        <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-cyan-400/10 pb-5">
           <div>
             <h1 className="text-2xl font-bold">
               Dashboard
@@ -344,7 +338,7 @@ if (data?.perfil) {
             </p>
           </div>
 
-<div className="rounded-2xl border border-cyan-500/20 bg-[#0b1228] px-5 py-3">
+<div className="w-full md:w-auto rounded-2xl border border-cyan-500/20 bg-[#0b1228] px-5 py-3">
   <div className="flex items-center gap-3">
     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500">
       <span className="font-bold text-black">
@@ -378,9 +372,9 @@ if (data?.perfil) {
   .filter((item) => {
     if (
       [
-        "Usuários",
-        "Link de indicação",
-      ].includes(item.title)
+  "Clientes",
+  "Link de indicação",
+].includes(item.title)
     ) {
       return role === "ADMIN";
     }
