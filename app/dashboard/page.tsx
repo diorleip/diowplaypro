@@ -364,6 +364,24 @@ if (data?.perfil) {
         <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between border-b border-cyan-400/10 pb-5">
           <div>
             <h1 className="text-2xl font-bold">
+              <div className="flex items-center gap-3">
+  <button
+    onClick={() => setSidebarOpen(true)}
+    className="md:hidden flex h-10 w-10 items-center justify-center rounded-lg bg-[#0b1228] border border-cyan-500/20"
+  >
+    <Menu size={22} />
+  </button>
+
+  <div>
+    <h1 className="text-2xl font-bold">
+      Dashboard
+    </h1>
+
+    <p className="mt-1 text-xs text-zinc-400">
+      Painel Administrativo Diow Play
+    </p>
+  </div>
+</div>
               Dashboard
             </h1>
 
