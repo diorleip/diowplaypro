@@ -349,13 +349,44 @@ if (data?.perfil) {
   />
 
   <aside
-    className={`absolute left-0 top-0 h-full w-[260px] bg-[#050b1a] border-r border-cyan-400/10 transform transition-transform duration-300 ${
-      sidebarOpen
-        ? "translate-x-0"
-               : "-translate-x-full"
-    }`}
-  >
-  </aside>
+  className={`absolute left-0 top-0 h-full w-[260px] bg-[#050b1a] border-r border-cyan-400/10 transform transition-transform duration-300 ${
+    sidebarOpen
+      ? "translate-x-0"
+      : "-translate-x-full"
+  }`}
+>
+  <div className="p-4 border-b border-cyan-400/10">
+    <h2 className="font-bold text-cyan-400">
+      Diow Play
+    </h2>
+  </div>
+
+  <div className="p-2 space-y-2">
+    <Link
+      href="/dashboard"
+      onClick={() => setSidebarOpen(false)}
+      className="block rounded-lg p-3 hover:bg-cyan-500/10"
+    >
+      Dashboard
+    </Link>
+
+    <Link
+      href="/dashboard/clientes"
+      onClick={() => setSidebarOpen(false)}
+      className="block rounded-lg p-3 hover:bg-cyan-500/10"
+    >
+      Clientes
+    </Link>
+
+    <Link
+      href="/dashboard/config"
+      onClick={() => setSidebarOpen(false)}
+      className="block rounded-lg p-3 hover:bg-cyan-500/10"
+    >
+      Configurações
+    </Link>
+  </div>
+</aside>
 </div>
 
       {/* CONTEÚDO */}
