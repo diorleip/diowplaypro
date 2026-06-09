@@ -96,20 +96,23 @@ useEffect(() => {
                 }}
               />
 
-              {logo && (
-                <img
-                  src={logo}
-                  alt="Logo"
-                  style={{
-                    position: "absolute",
-                    top:333,
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    width: 110,
-                    objectFit: "contain",
-                  }}
-                />
-              )}
+             {logo && (
+  <img
+    src={logo}
+    alt="Logo"
+    style={{
+      position: "absolute",
+      bottom: 60,
+      left: "50%",
+      transform: "translateX(-50%)",
+      width: 90,
+      maxHeight: 50,
+      objectFit: "contain",
+      zIndex: 9999,
+      border: "2px solid red",
+    }}
+  />
+)}
 
               <div
                 style={{
