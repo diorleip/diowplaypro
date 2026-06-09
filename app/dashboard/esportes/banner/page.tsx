@@ -1,13 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function BannerEsportesPage() {
-  const searchParams = useSearchParams();
+  
+const [cor, setCor] = useState("azul");
 
-  const cor =
-    searchParams.get("cor") || "azul";
+useEffect(() => {
+  const corUrl =
+    new URLSearchParams(window.location.search).get("cor");
+
+  if (corUrl) {
+    setCor(corUrl);
+  }
+}, []);
 
   const logo =
     typeof window !== "undefined"

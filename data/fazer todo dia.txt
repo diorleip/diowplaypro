@@ -11,3 +11,7 @@ git push
 rodar local:
 
 npm run dev
+
+git add .
+git commit -m "atualização"
+git push
