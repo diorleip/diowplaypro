@@ -7,31 +7,31 @@ import { useState } from "react";
 const cores = [
   {
     nome: "Azul",
-    arquivo: "/modelos/modelo01.png",
+    arquivo: "/modelos/azul/capa.png",
     valor: "azul",
     cor: "#2563eb",
   },
   {
     nome: "Vermelho",
-    arquivo: "/modelos/modelo02.png",
+    arquivo: "/modelos/vermelho/capa.png",
     valor: "vermelho",
     cor: "#dc2626",
   },
   {
     nome: "Verde",
-    arquivo: "/modelos/modelo03.png",
+    arquivo: "/modelos/verde/capa.png",
     valor: "verde",
     cor: "#16a34a",
   },
   {
     nome: "Amarelo",
-    arquivo: "/modelos/modelo04.png",
+    arquivo: "/modelos/amarelo/capa.png",
     valor: "amarelo",
     cor: "#eab308",
   },
   {
     nome: "Preto",
-    arquivo: "/modelos/modelo05.png",
+    arquivo: "/modelos/preto/capa.png",
     valor: "preto",
     cor: "#111827",
   },
@@ -85,8 +85,8 @@ export default function ModelosPage() {
                 key={corSelecionada.arquivo}
                 src={corSelecionada.arquivo}
                 alt="Modelo 01"
-                width={220}
-                height={390}
+                width={150}
+                height={250}
                 priority
                 className="mx-auto w-auto max-h-[420px]"
               />
