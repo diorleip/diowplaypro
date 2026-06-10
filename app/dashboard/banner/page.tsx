@@ -41,7 +41,7 @@ const sidebarItems = [
 
   {
     title: "Gerar Vods",
-    href: "/dashboard/video",
+    href: "/dashboard/videos",
     icon: PlayCircle,
   },
 
@@ -129,7 +129,7 @@ export default function BannerSearchPage() {
   return (
     <main className="min-h-screen bg-[#020817] text-white">
       {/* SIDEBAR */}
-      <aside className="fixed left-0 top-0 z-50 flex h-screen w-[240px] flex-col border-r border-cyan-400/10 bg-[#050b1a]">
+      <aside className="hidden lg:flex fixed left-0 top-0 z-50 h-screen w-[240px] flex-col border-r border-cyan-400/10 bg-[#050b1a]">
         {/* LOGO */}
         <div className="flex items-center gap-3 border-b border-cyan-400/10 p-4">
           <img
@@ -178,9 +178,9 @@ export default function BannerSearchPage() {
       </aside>
 
       {/* CONTEÚDO */}
-      <section className="ml-[240px] min-h-screen p-5">
+      <section className="min-h-screen p-3 md:p-5 lg:ml-[240px]">
         {/* HEADER */}
-        <div className="mb-6 flex items-center justify-between border-b border-cyan-400/10 pb-5">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-cyan-400/10 pb-5">
           <div>
             <h1 className="text-2xl font-bold">
               Gerador de Banner
@@ -202,7 +202,7 @@ export default function BannerSearchPage() {
         </div>
 
         {/* BUSCA */}
-        <div className="mb-8 flex gap-3">
+        <div className="mb-8 flex flex-col gap-3 sm:flex-row">
           <div className="relative flex-1">
             <Search
               size={18}
@@ -227,9 +227,9 @@ export default function BannerSearchPage() {
 
           {/* BOTÃO */}
           <button
-            onClick={searchMovies}
-            className="rounded-2xl bg-cyan-500 px-6 text-sm font-bold text-white transition-all hover:bg-cyan-400"
-          >
+  onClick={searchMovies}
+  className="h-12 w-full sm:w-auto rounded-2xl bg-cyan-500 px-6 text-sm font-bold text-white transition-all hover:bg-cyan-400"
+>
             Buscar
           </button>
         </div>
@@ -243,7 +243,7 @@ export default function BannerSearchPage() {
 
         {/* RESULTADOS */}
         {!loading && results.length > 0 && (
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
             {results.map((item) => {
               const title =
                 item.title || item.name;
@@ -265,7 +265,7 @@ export default function BannerSearchPage() {
                     <img
                       src={`https://image.tmdb.org/t/p/w500${item.poster_path}`}
                       alt={title}
-                      className="h-[300px] w-full object-cover transition-all duration-500 group-hover:scale-105"
+                      className="aspect-[2/3] w-full object-cover transition-all duration-500 group-hover:scale-105"
                     />
                   </div>
 
