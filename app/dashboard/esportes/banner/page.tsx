@@ -2,10 +2,13 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { nomeParaEscudo } from "@/lib/escudos";
 
 type Jogo = {
   hora: string;
   confronto: string;
+  casa: string;
+  fora: string;
 };
 
 export default function BannerEsportesPage() {
@@ -61,10 +64,15 @@ export default function BannerEsportesPage() {
                 .trim();
 
               if (confronto) {
-                lista.push({
-                  hora,
-                  confronto,
-                });
+               const [casa, fora] =
+  confronto.split(" x ");
+
+lista.push({
+  hora,
+  confronto,
+  casa: casa?.trim() || "",
+  fora: fora?.trim() || "",
+});
               }
             }
           }
@@ -314,19 +322,63 @@ export default function BannerEsportesPage() {
                         }
                       </div>
 
-                      <div
-                        style={{
-                          color:
-                            "#fff",
-                          fontSize: 20,
-fontFamily: "BebasNeue",
-letterSpacing: 1.0,
-                        }}
-                      >
-                        {
-                          jogo.confronto
-                        }
-                      </div>
+                     <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+  }}
+>
+  <img
+    src={`/escudos/clubes/${nomeParaEscudo(
+      jogo.casa
+    )}.svg`}
+    alt={jogo.casa}
+    style={{
+      width: 38,
+      height: 38,
+      objectFit: "contain",
+    }}
+    onError={(e) => {
+      e.currentTarget.src =
+        `/escudos/selecoes/${nomeParaEscudo(
+          jogo.casa
+        )}.svg`;
+    }}
+  />
+
+  <div
+    style={{
+      color: "#fff",
+      fontSize: 20,
+      fontFamily: "BebasNeue",
+      letterSpacing: 1,
+      textAlign: "center",
+      flex: 1,
+    }}
+  >
+    {jogo.confronto}
+  </div>
+
+  <img
+    src={`/escudos/clubes/${nomeParaEscudo(
+      jogo.fora
+    )}.svg`}
+    alt={jogo.fora}
+    style={{
+      width: 38,
+      height: 38,
+      objectFit: "contain",
+    }}
+    onError={(e) => {
+      e.currentTarget.src =
+        `/escudos/selecoes/${nomeParaEscudo(
+          jogo.fora
+        )}.svg`;
+    }}
+  />
+</div>
                     </div>
                   )
                 )}
@@ -347,6 +399,7 @@ letterSpacing: 1.0,
                   objectFit:
                     "contain",
                 }}
+                
               />
 
               {contato && (

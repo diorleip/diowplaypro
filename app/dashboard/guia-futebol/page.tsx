@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { nomeParaEscudo } from "@/lib/escudos";
 
 export default function GuiaFutebolPage() {
   const [textoGuia, setTextoGuia] = useState("");
@@ -58,7 +57,7 @@ export default function GuiaFutebolPage() {
   return (
     <div className="min-h-screen bg-[#030817] p-2">
       <div className="max-w-[600px] mx-auto">
-        <div className="bg-gradient-to-b from-[#0b63b6] to-[#1389f3] rounded-[24px] p-4 shadow-[0_0_30px_rgba(0,180,255,0.25)]">
+        <div className="bg-gradient-to-b from-[#0A1931] to-[#0066FF] rounded-[24px] p-4 shadow-[0_0_30px_rgba(0,102,255,0.25)]">
 
           <div className="flex items-center justify-between mb-4">
             <Link
@@ -77,9 +76,7 @@ export default function GuiaFutebolPage() {
 
           <div className="grid grid-cols-2 gap-2 mb-4">
             <button
-              onClick={() =>
-                buscarJogos("hoje")
-              }
+              onClick={() => buscarJogos("hoje")}
               className={`rounded-xl py-2 text-sm font-bold text-white ${
                 tipo === "hoje"
                   ? "bg-cyan-500"
@@ -90,9 +87,7 @@ export default function GuiaFutebolPage() {
             </button>
 
             <button
-              onClick={() =>
-                buscarJogos("amanha")
-              }
+              onClick={() => buscarJogos("amanha")}
               className={`rounded-xl py-2 text-sm font-bold text-white ${
                 tipo === "amanha"
                   ? "bg-cyan-500"
@@ -104,15 +99,12 @@ export default function GuiaFutebolPage() {
           </div>
 
           <div className="bg-[#0b4f8d] rounded-2xl p-3 h-[520px] overflow-y-auto text-white whitespace-pre-line text-[12px] leading-[20px]">
-
             {loading
               ? "Carregando jogos..."
               : textoGuia}
-
           </div>
 
           <div className="grid grid-cols-2 gap-2 mt-4">
-
             <button
               onClick={copiarTexto}
               className="bg-[#0b4f8d] rounded-xl py-2 text-white font-bold text-sm"
@@ -126,7 +118,6 @@ export default function GuiaFutebolPage() {
             >
               💬 WhatsApp
             </button>
-
           </div>
 
         </div>
