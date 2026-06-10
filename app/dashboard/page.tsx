@@ -107,7 +107,7 @@ const dashboardCards = [
     title: "Gerar video",
     subtitle:
       "gere vídeos de filmes e série automaticamente",
-    href: "/dashboard/video",
+    href: "/dashboard/videos",
     color: "bg-purple-500",
     icon: PlayCircle,
   },
