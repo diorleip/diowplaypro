@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { nomeParaEscudo } from "@/lib/escudos";
 
 export default function GuiaFutebolPage() {
   const [textoGuia, setTextoGuia] = useState("");
