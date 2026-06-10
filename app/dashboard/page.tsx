@@ -52,7 +52,7 @@ const sidebarItems = [
 
   {
     title: "Gerar Vods",
-    href: "/dashboard/video",
+    href: "/dashboard/videos",
     icon: PlayCircle,
   },
 
@@ -243,9 +243,22 @@ if (data?.perfil) {
     expirationDate.getTime() -
     today.getTime();
 
-  const diffDays = Math.ceil(
+  const [diffDays, setDiffDays] =
+  useState(30);
+
+useEffect(() => {
+  const today = new Date();
+
+  const diffTime =
+    expirationDate.getTime() -
+    today.getTime();
+
+  const dias = Math.ceil(
     diffTime / (1000 * 60 * 60 * 24)
   );
+
+  setDiffDays(dias);
+}, []);
 
   let statusColor =
     "bg-green-500/20 text-green-400";
