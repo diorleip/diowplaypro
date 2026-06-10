@@ -15,6 +15,8 @@ import {
   Crown,
   PlayCircle,
   Globe,
+  Menu,
+  X,
 } from "lucide-react";
 
 const TMDB_TOKEN =
@@ -89,6 +91,8 @@ export default function BannerSearchPage() {
 
   const [loading, setLoading] =
     useState(false);
+
+    const [menuOpen, setMenuOpen] = useState(false);
 
   async function searchMovies() {
     if (!query) return;
@@ -178,15 +182,15 @@ export default function BannerSearchPage() {
       </aside>
 
       {/* CONTEÚDO */}
-      <section className="min-h-screen p-3 md:p-5 lg:ml-[240px]">
+      <section className="min-h-screen p-4 md:p-5 lg:ml-[240px] max-w-7xl mx-auto">
         {/* HEADER */}
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-cyan-400/10 pb-5">
           <div>
-            <h1 className="text-2xl font-bold">
+            <h1 className="text-3xl font-black">
               Gerador de Banner
             </h1>
 
-            <p className="mt-1 text-xs text-zinc-400">
+            <p className="mt-2 text-sm text-zinc-400">
               Filmes • Séries • Novelas
             </p>
           </div>
@@ -200,6 +204,16 @@ export default function BannerSearchPage() {
             Dashboard
           </Link>
         </div>
+
+        <div className="mb-8 rounded-3xl border border-cyan-500/20 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 p-6">
+  <h2 className="text-2xl font-black">
+    🎬 Crie banners profissionais
+  </h2>
+
+  <p className="mt-2 text-zinc-400">
+    Busque qualquer filme ou série e gere banners prontos para IPTV.
+  </p>
+</div>
 
         {/* BUSCA */}
         <div className="mb-8 flex flex-col gap-3 sm:flex-row">
