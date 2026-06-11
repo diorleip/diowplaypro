@@ -2,150 +2,73 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { nomeParaEscudo } from "@/lib/escudos";
-
-type Jogo = {
-  hora: string;
-  confronto: string;
-  casa: string;
-  fora: string;
-};
 
 export default function BannerEsportesPage() {
-  const [mounted, setMounted] = useState(false);
-  const [cor, setCor] = useState("azul");
-  const [jogos, setJogos] = useState<Jogo[]>([]);
+  
+const [cor, setCor] = useState("azul");
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+useEffect(() => {
+  const corUrl =
+    new URLSearchParams(window.location.search).get("cor");
 
-  useEffect(() => {
-    const corUrl =
-      new URLSearchParams(
-        window.location.search
-      ).get("cor");
-
-    if (corUrl) {
-      setCor(corUrl);
-    }
-  }, []);
-
-  useEffect(() => {
-    async function carregarJogos() {
-      try {
-        const res = await fetch("/api/jogos");
-
-        const data = await res.json();
-
-        const linhas =
-          data.texto.split("\n");
-
-        const lista: Jogo[] = [];
-
-        let confronto = "";
-
-        linhas.forEach(
-          (linha: string) => {
-            if (
-              linha.includes("⚽")
-            ) {
-              confronto = linha
-                .replace("⚽", "")
-                .replace(/\*/g, "")
-                .trim();
-            }
-
-            if (
-              linha.includes("⏰")
-            ) {
-              const hora = linha
-                .replace("⏰", "")
-                .trim();
-
-              if (confronto) {
-               const [casa, fora] =
-  confronto.split(" x ");
-
-lista.push({
-  hora,
-  confronto,
-  casa: casa?.trim() || "",
-  fora: fora?.trim() || "",
-});
-              }
-            }
-          }
-        );
-
-        setJogos(
-          lista.slice(0,4)
-        );
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    carregarJogos();
-  }, []);
-
-  if (!mounted) {
-    return null;
+  if (corUrl) {
+    setCor(corUrl);
   }
+}, []);
 
   const logo =
-    localStorage.getItem(
-      "diow_logo"
-    ) || "";
+    typeof window !== "undefined"
+      ? localStorage.getItem("diow_logo") || ""
+      : "";
 
-  if (!logo) {
-    return (
-      <div className="min-h-screen bg-[#020617] flex items-center justify-center text-white">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-red-400">
-            Nenhuma logo cadastrada
-          </h1>
+ if (!logo) {
+  return (
+    <div className="min-h-screen bg-[#020617] flex items-center justify-center text-white">
+      <div className="text-center">
 
-          <p className="mt-4 text-zinc-400">
-            Cadastre uma logo em
-            Configurações antes de
-            gerar os banners.
-          </p>
+        <h1 className="text-3xl font-bold text-red-400">
+          Nenhuma logo cadastrada
+        </h1>
 
-          <div className="flex justify-center gap-4 mt-8">
-            <Link
-              href="/dashboard/config"
-              className="px-6 py-3 rounded-xl bg-cyan-500 text-black font-bold"
-            >
-              ⚙️ Configurações
-            </Link>
+        <p className="mt-4 text-zinc-400">
+          Cadastre uma logo em Configurações antes de gerar os banners.
+        </p>
 
-            <Link
-              href="/dashboard"
-              className="px-6 py-3 rounded-xl bg-blue-600 text-white font-bold"
-            >
-              ← Dashboard
-            </Link>
-          </div>
+        <div className="flex justify-center gap-4 mt-8">
+
+          <Link
+            href="/dashboard/config"
+            className="px-6 py-3 rounded-xl bg-cyan-500 text-black font-bold"
+          >
+            ⚙️ Configurações
+          </Link>
+
+          <Link
+            href="/dashboard"
+            className="px-6 py-3 rounded-xl bg-blue-600 text-white font-bold"
+          >
+            ← Dashboard
+          </Link>
+
         </div>
+
       </div>
-    );
-  }
-
+    </div>
+  );
+}
   const contato =
-    localStorage.getItem(
-      "diow_contact"
-    ) || "";
+    typeof window !== "undefined"
+      ? localStorage.getItem("diow_contact") || ""
+      : "";
 
-  const hoje =
-    new Date().toLocaleDateString(
-      "pt-BR",
-      {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-      }
-    );
+  const hoje = new Date().toLocaleDateString(
+    "pt-BR",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }
+  );
 
   return (
     <div className="min-h-screen bg-[#050505] p-6">
@@ -173,41 +96,38 @@ lista.push({
                 }}
               />
 
-              <img
-                src={logo}
-                alt="Logo"
-                style={{
-                  position:
-                    "absolute",
-                  bottom: 70,
-                  left: "50%",
-                  transform:
-                    "translateX(-50%)",
-                  width: 110,
-                  maxHeight: 70,
-                  objectFit:
-                    "contain",
-                }}
-              />
+             {logo && (
+  <img
+    src={logo}
+    alt="Logo"
+    style={{
+      position: "absolute",
+      bottom: 60,
+      left: "50%",
+      transform: "translateX(-50%)",
+      width: 90,
+      maxHeight: 50,
+      objectFit: "contain",
+      zIndex: 9999,
+      border: "2px solid red",
+    }}
+  />
+)}
 
               <div
                 style={{
-                  position:
-                    "absolute",
+                  position: "absolute",
                   bottom: 25,
                   left: 0,
                   right: 0,
-                  textAlign:
-                    "center",
-                  color:
-                    "#ffffff",
+                  textAlign: "center",
+                  color: "#ffffff",
                   fontSize: 18,
                   fontWeight: 900,
+                  textShadow: "0 0 10px #000",
                 }}
               >
                 {hoje}
-
-                
               </div>
 
             </div>
@@ -228,219 +148,67 @@ lista.push({
 
               <div
                 style={{
-                  position:
-                    "absolute",
+                  position: "absolute",
                   top: 15,
                   left: 0,
                   right: 0,
-                  textAlign:
-                    "center",
-                  color:
-                    "#002244",
-                  fontSize: 22,
+                  textAlign: "center",
+                 color: "#002244",
+                  fontSize: 16,
                   fontWeight: 900,
-                  fontFamily: "Impact"
+                  textShadow: "0 0 10px #000",
                 }}
               >
-                ⚽ FUTEBOL AO VIVO ⚽
+                JOGOS DO DIA
               </div>
 
               <div
                 style={{
-                  position:
-                    "absolute",
-                  top: 50,
+                  position: "absolute",
+                  top: 40,
                   left: 0,
                   right: 0,
-                  textAlign:
-                    "center",
-                  color:
-                    "#ffffff",
-                  fontSize: 30,
+                  textAlign: "center",
+                  color: "#ffffff",
+                  fontSize: 16,
                   fontWeight: 900,
-                  fontFamily: "BebasNeue"
+                  textShadow: "0 0 10px #000",
                 }}
               >
                 {hoje}
-
-                <img
-  src="/ligas.png"
-  alt="Ligas"
-  style={{
-    position: "absolute",
-    top: 340,
-    left: "50%",
-    transform: "translateX(-50%)",
-    width: 200,
-    objectFit: "contain",
-  }}
-/>
               </div>
-
-              <div
-                style={{
-                  position:
-                    "absolute",
-                  top: 85,
-                  left: 15,
-                  right: 15,
-                  display: "flex",
-                  flexDirection:
-                    "column",
-                  gap: 8,
-                }}
-              >
-                {jogos.map(
-                  (
-                    jogo,
-                    index
-                  ) => (
-                    <div
-                      key={
-                        index
-                      }
-                      style={{
-                        background:
-                          "rgba(0,0,0,0.25)",
-                        borderRadius: 10,
-                        padding: 8,
-                        textAlign:
-                          "center",
-                      }}
-                    >
-                      <div
-                        style={{
-                          color:
-                            "#fff",
-                          fontWeight: 900,
-                          fontSize: 13,
-                          fontFamily: "Arial Black"
-                        }}
-                      >
-                        {
-                          jogo.hora
-                        }
-                      </div>
-
-                     <div
-  style={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
-  }}
->
-  <img
-    src={`/escudos/clubes/${nomeParaEscudo(
-      jogo.casa
-    )}.svg`}
-    alt={jogo.casa}
-    style={{
-      width: 38,
-      height: 38,
-      objectFit: "contain",
-    }}
-    onError={(e) => {
-      e.currentTarget.src =
-        `/escudos/selecoes/${nomeParaEscudo(
-          jogo.casa
-        )}.svg`;
-    }}
-  />
-
-  <div
-    style={{
-      color: "#fff",
-      fontSize: 20,
-      fontFamily: "BebasNeue",
-      letterSpacing: 1,
-      textAlign: "center",
-      flex: 1,
-    }}
-  >
-    {jogo.confronto}
-  </div>
-
-  <img
-    src={`/escudos/clubes/${nomeParaEscudo(
-      jogo.fora
-    )}.svg`}
-    alt={jogo.fora}
-    style={{
-      width: 38,
-      height: 38,
-      objectFit: "contain",
-    }}
-    onError={(e) => {
-      e.currentTarget.src =
-        `/escudos/selecoes/${nomeParaEscudo(
-          jogo.fora
-        )}.svg`;
-    }}
-  />
-</div>
-                    </div>
-                  )
-                )}
-              </div>
-
-              <img
-                src={logo}
-                alt="Logo"
-                style={{
-                  position:
-                    "absolute",
-                  bottom: 420,
-                  left: "10%",
-                  transform:
-                    "translateX(-50%)",
-                  width: 80,
-                  maxHeight: 40,
-                  objectFit:
-                    "contain",
-                }}
-                
-              />
 
               {contato && (
-                <div
-                  style={{
-                    position:
-                      "absolute",
-                    bottom:70,
-                    left: 0,
-                    right: 0,
-                    display:
-                      "flex",
-                    justifyContent:
-                      "center",
-                    alignItems:
-                      "center",
-                    gap: 8,
-                    color:
-                      "#ffffff",
-                    fontSize:20,
-                    fontWeight: 700,
-                  }}
-                >
-                  <img
-                    src="/whatsapp.png"
-                    alt="WhatsApp"
-                    style={{
-                      width: 22,
-                      height: 22,
-                    }}
-                  />
+  <div
+    style={{
+      position: "absolute",
+      bottom: 20,
+      left: 0,
+      right: 0,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 8,
+      color: "#ffffff",
+      fontSize: 14,
+      fontWeight: 700,
+      textShadow: "0 0 10px #000",
+    }}
+  >
+    <img
+      src="/whatsapp.png"
+      alt="WhatsApp"
+      style={{
+        width: 22,
+        height: 22,
+        objectFit: "contain",
+      }}
+    />
 
-                  <span>
-                    {
-                      contato
-                    }
-                  </span>
-                </div>
-              )}
-
-            </div>
+    <span>{contato}</span>
+  </div>
+)}
+        </div>
           </div>
 
         </div>
