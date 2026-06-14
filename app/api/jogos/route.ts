@@ -10,15 +10,17 @@ const url =
   dia === "amanha"
     ? "https://mantosdofutebol.com.br/jogos-de-amanha-tv/"
     : "https://mantosdofutebol.com.br/guia-de-jogos-tv-hoje-ao-vivo/";
-    
+
     const { data } = await axios.get(url);
 
     const textoPagina = decodeURIComponent(
       data.replace(/%(?![0-9A-Fa-f]{2})/g, "%25")
     );
 
-    const regex =
-      /(\d{2}h\d{2}) - (.*?) x (.*?) - (.*?)\nCanais: (.*?)(?=\n\d{2}h\d{2}|\n\n|$)/gs;
+    const regex = new RegExp(
+  "(\\d{2}h\\d{2}) - (.*?) x (.*?) - (.*?)\\nCanais: ([\\s\\S]*?)(?=\\n\\d{2}h\\d{2}|\\n\\n|$)",
+  "g"
+);
 
     const jogos: any[] = [];
 
@@ -69,10 +71,16 @@ const url =
       ).values(),
     ];
 
-    const dataFormatada =
-      new Date().toLocaleDateString("pt-BR", {
-        timeZone: "America/Sao_Paulo",
-      });
+    const dataBase = new Date();
+
+if (dia === "amanha") {
+  dataBase.setDate(dataBase.getDate() + 1);
+}
+
+const dataFormatada =
+  dataBase.toLocaleDateString("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+  });
 
     let texto = "";
 
@@ -96,8 +104,8 @@ const url =
       texto +=
         `⏰ ${jogo.hora}\n`;
 
-      texto +=
-        `📺 Consulte o Diow Play\n`;
+     texto +=
+  `📺 ${jogo.tv}\n`;
     });
 
     texto += "━━━━━━━━━━━━━━━━━━\n";
