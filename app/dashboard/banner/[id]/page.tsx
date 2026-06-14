@@ -232,8 +232,8 @@ ${
 
 const caption = `${
   Number(year) >= 2026
-    ? "🚀 *LANÇAMENTO NO DIOW PLAY!* 🚀"
-    : "🎬 *NOVO CONTEÚDO ADICIONADO!* 🎬"
+    ? "*LANÇAMENTO NO DIOW PLAY!*"
+    : "*NOVO CONTEÚDO ADICIONADO!*"
 }
 
 🎬 ${movie.title || movie.name}
@@ -381,6 +381,7 @@ ${
   className="flex justify-center overflow-auto"
   style={{
     padding: "11px",
+       transformOrigin: "top center",
   }}
 >
   <div
@@ -392,6 +393,7 @@ ${
       overflow: "hidden",
       borderRadius: "40px",
       background: "#000",
+      border: "10px solid #0066FF",
     }}
   >
     {/* Fundo */}
@@ -401,7 +403,7 @@ ${
       className="absolute inset-0 h-full w-full object-cover"
       style={{
         filter: "blur(4px) brightness(0.7)",
-        transform: "scale(1.08)",
+        transform: "scale(1.00)",
       }}
     />
 
@@ -414,30 +416,56 @@ ${
       }}
     />
 
-    {/* Conteúdo */}
-    <div
-      className="relative z-10 h-full p-10"
+   {/* Marcas d'água */}
+<div
+  style={{
+    position: "absolute",
+    inset: 0,
+    zIndex: 1,
+    pointerEvents: "none",
+  }}
+>
+  {[...Array(12)].map((_, i) => (
+    <img
+      key={i}
+      src="/logo.png"
+      alt=""
       style={{
-        display: "flex",
-        flexDirection: "column",
+        position: "absolute",
+        width: "180px",
+        opacity: 0.05,
+        left: `${(i % 4) * 280 + 20}px`,
+        top: `${Math.floor(i / 4) * 380 + 40}px`,
       }}
-    >
+    />
+  ))}
+</div>
+
+    {/* Conteúdo */}
+   <div
+  className="relative z-10 h-full p-10"
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  }}
+>
 {/* Cabeçalho */}
 <div
   style={{
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    marginBottom: "15px",
+    marginBottom: "25px",
   }}
 >
   <div>
     <div
       style={{
-        fontSize: "42px",
+        fontSize: "32px",
         fontWeight: 900,
         color: "#fff",
-        lineHeight: 1,
+        lineHeight: 1.1,
       }}
     >
       FILME
@@ -445,12 +473,13 @@ ${
 
     <div
       style={{
-        fontSize: "24px",
+        fontSize: "30px",
         color: "#fff",
         fontWeight: 700,
+        marginTop: "25px"
       }}
     >
-      adicionado em nossa grade
+      adicionado a grade
     </div>
   </div>
 
@@ -458,7 +487,7 @@ ${
     src="/logo.png"
     alt="Diow Play"
     style={{
-      width: "140px",
+      width: "240px",
     }}
   />
 </div>
@@ -480,38 +509,44 @@ ${
     }
     alt={title}
     style={{
-      width: "220px",
-      height: "330px",
+      width: "430px",
+      height: "700px",
       objectFit: "cover",
-      borderRadius: "10px",
+      borderRadius: "50px",
       boxShadow:
         "0 0 20px rgba(0,0,0,.5)",
+        border: "3px solid #0066FF",
     }}
   />
 
+
   {/* Infos */}
   <div
-    style={{
-      flex: 1,
-    }}
-  >
+  style={{
+    width: "520px",
+    minWidth: "520px",
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+  }}
+>
     <div
-      style={{
-        color: "#ffd400",
-        fontSize: "34px",
-        fontWeight: 900,
-        marginBottom: "15px",
-      }}
-    >
-      {title.toUpperCase()}
-    </div>
+  style={{
+    color: "#ffd400",
+    fontSize: "28px",
+    fontWeight: 900,
+    lineHeight: 1.1,
+    wordBreak: "break-word",
+  }}
+>
+  {title.toUpperCase()}
+</div>
 
     <div
       style={{
         color: "#fff",
-        fontSize: "24px",
+        fontSize: "22px",
         fontWeight: 700,
-        marginBottom: "15px",
       }}
     >
       Lançamento: {year}
@@ -520,7 +555,7 @@ ${
     <div
       style={{
         color: "#ffd400",
-        fontSize: "20px",
+        fontSize: "22px",
         fontWeight: 700,
         marginBottom: "10px",
       }}
@@ -538,19 +573,20 @@ ${
         padding: "10px",
         borderRadius: "10px",
         color: "#fff",
-        fontSize: "18px",
-        lineHeight: 1.5,
+        fontSize: "30px",
+        lineHeight: 1.4,
+        wordBreak: "break-word",
+        overflowWrap: "break-word",
       }}
     >
       <strong>Sinopse:</strong>{" "}
       {movie?.overview
         ? movie.overview.slice(
             0,
-            280
+            160
           ) + "..."
         : "Uma experiência incrível disponível agora no Diow Play 🚀"}
-    </div>
-  </div>
+</div>
 </div>
 </div>
 
@@ -560,23 +596,22 @@ ${
     display: "flex",
     justifyContent: "center",
     marginTop: "20px",
-    marginBottom: "10px",
   }}
 >
   <img
     src="/dispositivos.png"
     alt="Dispositivos"
     style={{
-      width: "300px",
-      maxWidth: "100%",
+      width: "550px",
+      height: "auto",
       display: "block",
+      filter: "drop-shadow(0 0 20px rgba(0,102,255,0.7))",
     }}
   />
 </div>
 
-</div> {/* fecha relative z-10 h-full p-10 */}
-
-
+</div>
+</div>
 </div>
 
 {/* Botões */}
