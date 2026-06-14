@@ -73,28 +73,48 @@ export default function BannerPage() {
   }
 
   async function copyCaption() {
-    const text = `🎬 ${
-      movie.title || movie.name
-    }
+   const year = (
+  movie.release_date ||
+  movie.first_air_date ||
+  ""
+).split("-")[0];
 
-⭐️ Nota: ${movie.vote_average?.toFixed(
-      1
-    )}
+const text = `${
+  Number(year) >= 2026
+    ? "🚀 *LANÇAMENTO NO DIOW PLAY!* 🚀"
+    : "🎬 *NOVO CONTEÚDO ADICIONADO!* 🎬"
+}
 
-📅 Ano: ${
-      (
-        movie.release_date ||
-        movie.first_air_date ||
-        ""
-      ).split("-")[0]
-    }
+🎬 ${movie.title || movie.name}
 
-🍿 ${
-      movie?.overview &&
-      movie.overview.length > 0
-        ? movie.overview
-        : "Uma experiência incrível disponível agora no Diow Play 🚀"
-    }
+📅 Ano: ${year}
+
+⭐ Nota: ${movie.vote_average?.toFixed(
+  1
+)}
+
+🎭 Categoria: ${
+  movie?.genres
+    ?.map((g: any) => g.name)
+    .join(", ") || ""
+}
+
+📖 Sinopse:
+
+${
+  movie?.overview
+    ? movie.overview.slice(
+        0,
+        250
+      )
+    : "Uma experiência incrível disponível agora no Diow Play 🚀"
+}
+
+#diowplay
+#FilmesESeries
+#MaratonaPerfeita
+#LançamentoDoDia
+#StreamingSemLimites
 
 🔥 Assista agora no Diow Play!`;
 
@@ -204,6 +224,48 @@ export default function BannerPage() {
 
       if (!canvas) return;
 
+      const year = (
+  movie.release_date ||
+  movie.first_air_date ||
+  ""
+).split("-")[0];
+
+const caption = `${
+  Number(year) >= 2026
+    ? "🚀 *LANÇAMENTO NO DIOW PLAY!* 🚀"
+    : "🎬 *NOVO CONTEÚDO ADICIONADO!* 🎬"
+}
+
+🎬 ${movie.title || movie.name}
+
+📅 Ano: ${year}
+
+⭐ Nota: ${movie.vote_average?.toFixed(
+  1
+)}
+
+🎭 Categoria: ${
+  movie?.genres
+    ?.map((g: any) => g.name)
+    .join(", ") || ""
+}
+
+📖 Sinopse:
+
+${
+  movie?.overview
+    ? movie.overview.slice(0, 250)
+    : "Uma experiência incrível disponível agora no Diow Play 🚀"
+}
+
+#diowplay
+#FilmesESeries
+#MaratonaPerfeita
+#LançamentoDoDia
+#StreamingSemLimites
+
+🔥 Assista agora no Diow Play!`;
+
       const image =
         canvas.toDataURL(
           "image/jpeg",
@@ -223,27 +285,10 @@ export default function BannerPage() {
         TELEGRAM_CHAT
       );
 
-      formData.append(
-        "caption",
-        `🎬 ${
-          movie.title ||
-          movie.name
-        }
-
-⭐️ Nota: ${movie.vote_average?.toFixed(
-          1
-        )}
-
-📅 Ano: ${
-          (
-            movie.release_date ||
-            movie.first_air_date ||
-            ""
-          ).split("-")[0]
-        }
-
-🔥 Assista agora no Diow Play!`
-      );
+    formData.append(
+  "caption",
+  caption
+);
 
       formData.append(
         "photo",
@@ -302,6 +347,16 @@ export default function BannerPage() {
     ""
   ).split("-")[0];
 
+  const statusConteudo =
+  Number(year) >= 2026
+    ? "🚀 LANÇAMENTO"
+    : "✅ CONTEÚDO ADICIONADO";
+
+  const genres =
+  movie?.genres
+    ?.map((g: any) => g.name)
+    .join(", ") || "";
+
   const backdrop =
     movie.backdrop_path
       ? `/api/tmdb-image?path=${movie.backdrop_path}`
@@ -311,147 +366,291 @@ export default function BannerPage() {
     <main className="min-h-screen bg-[#020817] p-8 text-white">
       {/* Header */}
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
-        <Link
-          href="/dashboard/banner"
-          className="flex items-center gap-2 rounded-2xl border border-cyan-400/20 bg-cyan-500/10 px-5 py-3 text-sm font-semibold text-cyan-300"
-        >
-          <ArrowLeft size={18} />
-          Voltar
-        </Link>
+<Link
+  href="/dashboard/banner"
+  className="flex items-center gap-2 rounded-2xl border border-cyan-400/20 bg-cyan-500/10 px-5 py-3 text-sm font-semibold text-cyan-300"
+>
+  <ArrowLeft size={18} />
+  Voltar
+</Link>
 
-        <div className="flex flex-wrap gap-4">
-          <button
-            onClick={downloadBanner}
-            className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3 font-bold"
-          >
-            <Download size={18} />
-            Baixar Banner
-          </button>
+</div>
 
-          <button
-            onClick={copyCaption}
-            className="flex items-center gap-2 rounded-2xl bg-purple-600 px-6 py-3 font-bold"
-          >
-            <Copy size={18} />
-            Copiar Legenda
-          </button>
+{/* Banner */}
+<div
+  className="flex justify-center overflow-auto"
+  style={{
+    padding: "11px",
+  }}
+>
+  <div
+    ref={bannerRef}
+    style={{
+      width: "1280px",
+      height: "720px",
+      position: "relative",
+      overflow: "hidden",
+      borderRadius: "40px",
+      background: "#000",
+    }}
+  >
+    {/* Fundo */}
+    <img
+      src={backdrop}
+      alt={title}
+      className="absolute inset-0 h-full w-full object-cover"
+      style={{
+        filter: "blur(4px) brightness(0.7)",
+        transform: "scale(1.08)",
+      }}
+    />
 
-          <button
-            onClick={sendTelegram}
-            className="flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 font-bold"
-          >
-            <Send size={18} />
-            Enviar Telegram
-          </button>
+    {/* Overlay */}
+    <div
+      className="absolute inset-0"
+      style={{
+        background:
+          "linear-gradient(to bottom, rgba(0,0,0,.25), rgba(0,0,0,.75))",
+      }}
+    />
 
-          <Link
-            href="/dashboard/banner"
-            className="rounded-2xl bg-zinc-700 px-6 py-3 font-bold"
-          >
-            Criar Outro
-          </Link>
+    {/* Conteúdo */}
+    <div
+      className="relative z-10 h-full p-10"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+{/* Cabeçalho */}
+<div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: "15px",
+  }}
+>
+  <div>
+    <div
+      style={{
+        fontSize: "42px",
+        fontWeight: 900,
+        color: "#fff",
+        lineHeight: 1,
+      }}
+    >
+      FILME
+    </div>
+
+    <div
+      style={{
+        fontSize: "24px",
+        color: "#fff",
+        fontWeight: 700,
+      }}
+    >
+      adicionado em nossa grade
+    </div>
+  </div>
+
+  <img
+    src="/logo.png"
+    alt="Diow Play"
+    style={{
+      width: "140px",
+    }}
+  />
+</div>
+
+{/* Conteúdo */}
+<div
+  style={{
+    display: "flex",
+    gap: "20px",
+    marginTop: "10px",
+  }}
+>
+  {/* Poster */}
+  <img
+    src={
+      movie?.poster_path
+        ? `/api/tmdb-image?path=${movie.poster_path}`
+        : "/logo.png"
+    }
+    alt={title}
+    style={{
+      width: "220px",
+      height: "330px",
+      objectFit: "cover",
+      borderRadius: "10px",
+      boxShadow:
+        "0 0 20px rgba(0,0,0,.5)",
+    }}
+  />
+
+  {/* Infos */}
+  <div
+    style={{
+      flex: 1,
+    }}
+  >
+    <div
+      style={{
+        color: "#ffd400",
+        fontSize: "34px",
+        fontWeight: 900,
+        marginBottom: "15px",
+      }}
+    >
+      {title.toUpperCase()}
+    </div>
+
+    <div
+      style={{
+        color: "#fff",
+        fontSize: "24px",
+        fontWeight: 700,
+        marginBottom: "15px",
+      }}
+    >
+      Lançamento: {year}
+    </div>
+
+    <div
+      style={{
+        color: "#ffd400",
+        fontSize: "20px",
+        fontWeight: 700,
+        marginBottom: "10px",
+      }}
+    >
+      Categoria:{" "}
+      {movie?.genres
+        ?.map((g: any) => g.name)
+        .join(", ")}
+    </div>
+
+    <div
+      style={{
+        background:
+          "rgba(0,0,0,.35)",
+        padding: "10px",
+        borderRadius: "10px",
+        color: "#fff",
+        fontSize: "18px",
+        lineHeight: 1.5,
+      }}
+    >
+      <strong>Sinopse:</strong>{" "}
+      {movie?.overview
+        ? movie.overview.slice(
+            0,
+            280
+          ) + "..."
+        : "Uma experiência incrível disponível agora no Diow Play 🚀"}
+    </div>
+  </div>
+</div>
+
+<div className="flex flex-wrap gap-4">     
         </div>
-      </div>
+    </div> 
 
-      {/* Banner */}
-      <div className="flex justify-center">
-        <div
-          ref={bannerRef}
-          style={{
-            width: "1280px",
-            height: "720px",
-            position: "relative",
-            overflow: "hidden",
-            borderRadius: "40px",
-            background: "#000",
-          }}
-        >
-          {/* Fundo */}
-          <img
-            src={backdrop}
-            alt={title}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
+  {/* Dispositivos */}
+<div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    marginTop: "20px",
+  }}
+>
+  <img
+    src="/dispositivos.png"
+    alt="Dispositivos"
+    style={{
+      width: "300px",
+      maxWidth: "100%",
+    }}
+  />
+</div>
 
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/20" />
+</div> {/* fecha relative z-10 h-full p-10 */}
 
-          {/* Conteúdo */}
-          <div className="relative z-10 flex h-full items-center gap-14 px-16">
-            {/* Poster */}
-            <div className="flex min-w-[320px] justify-center">
-              <img
-                src={
-                  movie?.poster_path
-                    ? `/api/tmdb-image?path=${movie.poster_path}`
-                    : "/logo.png"
-                }
-                alt={title}
-                width={320}
-                height={480}
-                loading="eager"
-                style={{
-                  width: "320px",
-                  height: "480px",
-                  objectFit: "cover",
-                  borderRadius: "24px",
-                  display: "block",
-                }}
-              />
-            </div>
 
-            {/* Infos */}
-            <div className="max-w-[700px]">
-              {/* Logo */}
-              <img
-                src="/logo.png"
-                alt="Logo"
-                className="mb-8 w-44"
-              />
+</div>
 
-              {/* Título */}
-              <h1 className="text-6xl font-black leading-tight">
-                {title}
-              </h1>
+{/* Botões */}
+<div className="mt-8 flex flex-wrap justify-center gap-4">
+  <button
+    onClick={downloadBanner}
+    className="rounded-2xl bg-zinc-700 px-8 py-4 font-bold text-white"
+  >
+    ⬇️ SALVAR BANNER
+  </button>
 
-              {/* Dados */}
-              <div className="mt-5 flex gap-6 text-2xl text-zinc-300">
-                <span>
-                  ⭐{" "}
-                  {movie.vote_average?.toFixed(
-                    1
-                  )}
-                </span>
+  <button
+    onClick={copyCaption}
+    className="rounded-2xl bg-green-500 px-8 py-4 font-bold text-white"
+  >
+    📋 COPIAR MENSAGEM
+  </button>
 
-                <span>
-                  📅 {year}
-                </span>
-              </div>
+  <button
+    onClick={sendTelegram}
+    className="rounded-2xl bg-sky-500 px-8 py-4 font-bold text-white"
+  >
+    ✈️ ENVIAR TELEGRAM
+  </button>
 
-              {/* Sinopse */}
-              <p className="mt-7 text-2xl leading-relaxed text-zinc-200">
-                {movie?.overview &&
-                movie.overview.length > 0
-                  ? movie.overview
-                  : "Uma experiência incrível disponível agora no Diow Play 🚀"}
-              </p>
+  <Link
+    href="/dashboard/banner"
+    className="rounded-2xl bg-fuchsia-600 px-8 py-4 font-bold text-white"
+  >
+    ➕ CRIAR NOVO
+  </Link>
+</div>
 
-              {/* Contato */}
-              <div className="mt-10 rounded-2xl border border-cyan-400/20 bg-cyan-500/10 px-6 py-4">
-                <p className="text-xl font-bold text-cyan-300">
-                  {typeof window !==
-                  "undefined"
-                    ? localStorage.getItem(
-                        "diow_contact"
-                      ) ||
-                      "47 99202-7636"
-                    : "47 99202-7636"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+{/* Prévia WhatsApp */}
+<div className="mx-auto mt-8 max-w-5xl rounded-3xl border border-cyan-500/30 bg-[#0b1120] p-6">
+  <h2 className="mb-4 text-center text-3xl font-bold text-cyan-400">
+    📱 Prévia da Mensagem para WhatsApp
+  </h2>
+
+  <textarea
+    readOnly
+    value={`${
+      Number(year) >= 2026
+        ? " *LANÇAMENTO NO DIOW PLAY!* "
+        : " *NOVO CONTEÚDO ADICIONADO!* "
+    }
+
+🎬 *${title}*
+
+📅 Ano: ${year}
+
+⭐ Nota: ${movie.vote_average?.toFixed(1)}/10
+
+🎭 Categorias: ${genres}
+
+📖 Sinopse:
+
+${
+      movie?.overview
+        ? movie.overview.slice(0, 350)
+        : ""
+    }
+
+#DiowPlay
+#FilmesESeries
+#MaratonaPerfeita
+#LançamentoDoDia
+#StreamingSemLimites
+
+🔥 Assista agora no Diow Play!`}
+    className="h-[320px] w-full rounded-2xl bg-[#020617] p-4 text-white"
+  />
+</div>
     </main>
   );
 }

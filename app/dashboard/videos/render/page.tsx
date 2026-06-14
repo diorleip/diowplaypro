@@ -48,16 +48,22 @@ export default function RenderVideo() {
     );
   }
 
-  const legenda = `🎬 ${data.title}
+const year = (
+  data.release_date ||
+  data.first_air_date ||
+  ""
+).split("-")[0];
 
-🍿 NOVO CONTEÚDO ADICIONADO
+const legenda = `
+🚨🚨🚨 TESTE DIOW PLAY 🚨🚨🚨
 
-📖 ${
-    data.overview ||
-    "Novo conteúdo disponível no Diow Play!"
-  }
+SE VOCÊ ESTÁ LENDO ISSO,
+ESTE É O ARQUIVO CORRETO.
 
-🔥 Assista agora no Diow Play!`;
+🔥 TESTE 12345 🔥
+`;
+
+console.log(data);
 
   async function baixar() {
     try {
