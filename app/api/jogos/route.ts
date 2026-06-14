@@ -1,38 +1,73 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import axios from "axios";
 
 export async function GET(req: NextRequest) {
   try {
     const dia =
       req.nextUrl.searchParams.get("dia") || "hoje";
 
-    const arquivo =
+    const url =
       dia === "amanha"
-        ? path.join(
-            process.cwd(),
-            "data",
-            "jogos-amanha.json"
-          )
-        : path.join(
-            process.cwd(),
-            "data",
-            "jogos.json"
-          );
+        ? "https://mantosdofutebol.com.br/guia-de-jogos-tv-amanha-ao-vivo/"
+        : "https://mantosdofutebol.com.br/guia-de-jogos-tv-hoje-ao-vivo/";
 
-    if (!fs.existsSync(arquivo)) {
-      return NextResponse.json({
-        texto: "❌ Arquivo de jogos não encontrado.",
-        jogos: [],
+    const { data } = await axios.get(url);
+
+    const textoPagina = decodeURIComponent(
+      data.replace(/%(?![0-9A-Fa-f]{2})/g, "%25")
+    );
+
+    const regex =
+      /(\d{2}h\d{2}) - (.*?) x (.*?) - (.*?)\nCanais: (.*?)(?=\n\d{2}h\d{2}|\n\n|$)/gs;
+
+    const jogos: any[] = [];
+
+    let match;
+
+    while ((match = regex.exec(textoPagina)) !== null) {
+      jogos.push({
+        campeonato: match[4].trim(),
+        casa: match[2].trim(),
+        fora: match[3].trim(),
+        hora: match[1].replace("h", ":"),
+        tv: match[5].trim(),
       });
     }
 
-    const conteudo = fs.readFileSync(
-      arquivo,
-      "utf8"
+    const campeonatosPermitidos = [
+      "Copa do Mundo",
+      "Brasileirão Série A",
+      "Brasileirão Série B",
+      "Brasileirão Série C",
+      "Brasileirão Série D",
+      "Libertadores",
+      "Sul-Americana",
+      "Premier League",
+      "La Liga",
+      "Serie A",
+      "Bundesliga",
+      "Ligue 1",
+      "Champions League",
+      "Europa League",
+      "Conference League",
+      "Copa do Nordeste",
+      "Mundial de Clubes",
+    ];
+
+    const jogosFiltrados = jogos.filter((jogo) =>
+      campeonatosPermitidos.some((c) =>
+        jogo.campeonato.includes(c)
+      )
     );
 
-    const jogos = JSON.parse(conteudo);
+    const jogosUnicos = [
+      ...new Map(
+        jogosFiltrados.map((jogo) => [
+          `${jogo.casa}-${jogo.fora}-${jogo.hora}`,
+          jogo,
+        ])
+      ).values(),
+    ];
 
     const dataFormatada =
       new Date().toLocaleDateString("pt-BR", {
@@ -49,9 +84,8 @@ export async function GET(req: NextRequest) {
         `📆 | *JOGOS DE HOJE - ${dataFormatada}*\n`;
     }
 
-    jogos.forEach((jogo: any) => {
-      texto +=
-        "━━━━━━━━━━━━━━━━━━\n";
+    jogosUnicos.forEach((jogo: any) => {
+      texto += "━━━━━━━━━━━━━━━━━━\n";
 
       texto +=
         `🏆 *${jogo.campeonato.toUpperCase()}*\n`;
@@ -66,22 +100,19 @@ export async function GET(req: NextRequest) {
         `📺 Consulte o Diow Play\n`;
     });
 
-    texto +=
-      "━━━━━━━━━━━━━━━━━━\n";
-
+    texto += "━━━━━━━━━━━━━━━━━━\n";
     texto +=
       "⚽ Todos os jogos disponíveis no Diow Play! 🚀";
 
     return NextResponse.json({
       texto,
-      jogos,
+      jogos: jogosUnicos,
     });
   } catch (error) {
     console.error(error);
 
     return NextResponse.json({
-      texto:
-        "❌ Erro ao carregar os jogos.",
+      texto: "❌ Erro ao carregar os jogos.",
       jogos: [],
     });
   }
