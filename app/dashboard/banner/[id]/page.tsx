@@ -160,18 +160,26 @@ ${
         setTimeout(resolve, 1000)
     );
 
-    const canvas =
-      await html2canvas(
-        bannerRef.current,
-        {
-          useCORS: true,
-          allowTaint: false,
-          scale: 1,
-          backgroundColor:
-            "#000000",
-          logging: false,
-        }
-      );
+    const canvas = await html2canvas(
+  bannerRef.current,
+  {
+    useCORS: true,
+    allowTaint: false,
+    backgroundColor: "#000000",
+    logging: false,
+
+    width: 1080,
+    height: 1350,
+
+    windowWidth: 1080,
+    windowHeight: 1350,
+
+    scrollX: 0,
+    scrollY: 0,
+
+    scale: 2
+  }
+);
 
     return canvas;
   }
