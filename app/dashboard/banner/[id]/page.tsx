@@ -386,8 +386,8 @@ ${
   <div
     ref={bannerRef}
     style={{
-      width: "1280px",
-      height: "720px",
+      width: "1080px",
+      height: "1350px",
       position: "relative",
       overflow: "hidden",
       borderRadius: "40px",
@@ -552,17 +552,15 @@ ${
     </div>
   </div>
 </div>
+</div>
 
-<div className="flex flex-wrap gap-4">     
-        </div>
-    </div> 
-
-  {/* Dispositivos */}
+{/* Dispositivos */}
 <div
   style={{
     display: "flex",
     justifyContent: "center",
     marginTop: "20px",
+    marginBottom: "10px",
   }}
 >
   <img
@@ -571,6 +569,7 @@ ${
     style={{
       width: "300px",
       maxWidth: "100%",
+      display: "block",
     }}
   />
 </div>

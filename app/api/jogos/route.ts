@@ -1,92 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const API_KEY = process.env.API_FOOTBALL_KEY!;
-
-const LIGAS_PERMITIDAS = [
-  71, // Série A
-  72, // Série B
-  73, // Série C
-  848, // Série D
-  74, // Copa do Brasil
-
-  13,
-  11,
-  10,
-
-  39,
-  140,
-  135,
-
-  78,
-  61,
-
-  2,
-  3,
-
-  1,
-  15,
-
-  960,
-];
+import fs from "fs";
+import path from "path";
 
 export async function GET(req: NextRequest) {
   try {
     const dia =
       req.nextUrl.searchParams.get("dia") || "hoje";
 
-    const data = new Date();
+    const arquivo =
+      dia === "amanha"
+        ? path.join(
+            process.cwd(),
+            "data",
+            "jogos-amanha.json"
+          )
+        : path.join(
+            process.cwd(),
+            "data",
+            "jogos.json"
+          );
 
-    if (dia === "amanha") {
-      data.setDate(data.getDate() + 1);
+    if (!fs.existsSync(arquivo)) {
+      return NextResponse.json({
+        texto: "❌ Arquivo de jogos não encontrado.",
+        jogos: [],
+      });
     }
 
-    const dataApi = data
-      .toISOString()
-      .split("T")[0];
-
-    const response = await fetch(
-      `https://v3.football.api-sports.io/fixtures?date=${dataApi}`,
-      {
-        headers: {
-          "x-apisports-key": API_KEY,
-        },
-        cache: "no-store",
-      }
+    const conteudo = fs.readFileSync(
+      arquivo,
+      "utf8"
     );
 
-    const json = await response.json();
+    const jogos = JSON.parse(conteudo);
 
-    let jogos = json.response || [];
-
-    jogos = jogos.filter((jogo: any) =>
-      LIGAS_PERMITIDAS.includes(
-        Number(jogo.league.id)
-      )
-    );
-
-jogos.sort((a: any, b: any) => {
-  const horarioA = new Date(
-    a.fixture.date
-  ).toLocaleTimeString("pt-BR", {
-    timeZone: "America/Sao_Paulo",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-
-  const horarioB = new Date(
-    b.fixture.date
-  ).toLocaleTimeString("pt-BR", {
-    timeZone: "America/Sao_Paulo",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-  });
-
-  return horarioA.localeCompare(horarioB);
-});
     const dataFormatada =
-      data.toLocaleDateString("pt-BR", {
+      new Date().toLocaleDateString("pt-BR", {
         timeZone: "America/Sao_Paulo",
       });
 
@@ -101,25 +50,17 @@ jogos.sort((a: any, b: any) => {
     }
 
     jogos.forEach((jogo: any) => {
-      const horario = new Date(
-        jogo.fixture.date
-      ).toLocaleTimeString("pt-BR", {
-        timeZone: "America/Sao_Paulo",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-
       texto +=
         "━━━━━━━━━━━━━━━━━━\n";
 
       texto +=
-        `🏆 *${jogo.league.name.toUpperCase()}*\n`;
+        `🏆 *${jogo.campeonato.toUpperCase()}*\n`;
 
       texto +=
-        `⚽ *${jogo.teams.home.name}* x *${jogo.teams.away.name}*\n`;
+        `⚽ *${jogo.casa}* x *${jogo.fora}*\n`;
 
       texto +=
-        `⏰ ${horario}\n`;
+        `⏰ ${jogo.hora}\n`;
 
       texto +=
         `📺 Consulte o Diow Play\n`;
@@ -127,11 +68,13 @@ jogos.sort((a: any, b: any) => {
 
     texto +=
       "━━━━━━━━━━━━━━━━━━\n";
+
     texto +=
       "⚽ Todos os jogos disponíveis no Diow Play! 🚀";
 
     return NextResponse.json({
       texto,
+      jogos,
     });
   } catch (error) {
     console.error(error);
@@ -139,6 +82,7 @@ jogos.sort((a: any, b: any) => {
     return NextResponse.json({
       texto:
         "❌ Erro ao carregar os jogos.",
+      jogos: [],
     });
   }
 }

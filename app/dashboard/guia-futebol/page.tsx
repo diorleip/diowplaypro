@@ -98,7 +98,7 @@ export default function GuiaFutebolPage() {
             </button>
           </div>
 
-          <div className="bg-[#0b4f8d] rounded-2xl p-3 h-[520px] overflow-y-auto text-white whitespace-pre-line text-[12px] leading-[20px]">
+          <div className="bg-[#0B1220] border border-cyan-500/20 rounded-2xl p-3 h-[520px] overflow-y-auto text-white whitespace-pre-line text-[12px] leading-[20px]">
             {loading
               ? "Carregando jogos..."
               : textoGuia}
@@ -107,7 +107,7 @@ export default function GuiaFutebolPage() {
           <div className="grid grid-cols-2 gap-2 mt-4">
             <button
               onClick={copiarTexto}
-              className="bg-[#0b4f8d] rounded-xl py-2 text-white font-bold text-sm"
+              className="bg-[#111827] rounded-xl py-2 text-white font-bold text-sm"
             >
               📋 Copiar
             </button>
