@@ -6,11 +6,11 @@ export async function GET(req: NextRequest) {
     const dia =
       req.nextUrl.searchParams.get("dia") || "hoje";
 
-    const url =
-      dia === "amanha"
-        ? "https://mantosdofutebol.com.br/guia-de-jogos-tv-amanha-ao-vivo/"
-        : "https://mantosdofutebol.com.br/guia-de-jogos-tv-hoje-ao-vivo/";
-
+const url =
+  dia === "amanha"
+    ? "https://mantosdofutebol.com.br/jogos-de-amanha-tv/"
+    : "https://mantosdofutebol.com.br/guia-de-jogos-tv-hoje-ao-vivo/";
+    
     const { data } = await axios.get(url);
 
     const textoPagina = decodeURIComponent(
