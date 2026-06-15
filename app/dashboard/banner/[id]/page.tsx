@@ -476,8 +476,8 @@ ${
         lineHeight: 1.1,
       }}
     >
-      FILME
-    </div>
+  {movie?.first_air_date ? "SÉRIE" : "FILME"}
+</div>
 
     <div
       style={{
@@ -487,8 +487,10 @@ ${
         marginTop: "25px"
       }}
     >
-      adicionado a grade
-    </div>
+  {movie?.first_air_date
+    ? "adicionada à grade"
+    : "adicionado à grade"}
+</div>
   </div>
 
   <img
