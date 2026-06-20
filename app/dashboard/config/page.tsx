@@ -18,6 +18,19 @@ export default function ConfigPage() {
   const [removeBackground, setRemoveBackground] = useState(false);
 
   useEffect(() => {
+  window.onerror = function (
+    message,
+    source,
+    lineno,
+    colno,
+    error
+  ) {
+    alert(`ERRO: ${message}`);
+    return false;
+  };
+}, []);
+
+  useEffect(() => {
     const savedContact = localStorage.getItem("diow_contact");
     const savedLogo = localStorage.getItem("diow_logo");
     const savedTelegram =
@@ -72,7 +85,7 @@ export default function ConfigPage() {
 
 if (!file) return;
 
-if (file.size > 512 * 1024) {
+if (file.size > 1024 * 1024) {
   alert(`Logo: ${Math.round(file.size / 1024)} KB`);
   return;
 }
