@@ -149,11 +149,7 @@ export default function LoginPage() {
         >
           Siga nosso Canal
         </a>
-
-        <p className="mt-8 text-center text-xs text-zinc-500">
-          Feito por Diow 🚀 © 2026 DiowPlay. Todos os direitos reservados.
-        </p>
-      </div>
+        </div>
     </main>
   );
 }
