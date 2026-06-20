@@ -84,7 +84,9 @@ if (file.size > 512 * 1024) {
 
       localStorage.setItem("diow_logo", base64);
 
-      setLogo(base64);
+      setTimeout(() => {
+  setLogo(base64);
+}, 100);
 
       alert("Logo salva com sucesso!");
     };
