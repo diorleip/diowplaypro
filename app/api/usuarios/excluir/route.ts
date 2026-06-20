@@ -15,10 +15,10 @@ export async function POST(req: Request) {
       success: true,
     });
   } catch (error) {
-    console.error(error);
+  console.error("DELETE USER ERROR:", error);
 
-    return NextResponse.json({
-      error: "Erro ao excluir usuário",
-    });
-  }
+  return NextResponse.json({
+    error: String(error),
+  });
+}
 }
