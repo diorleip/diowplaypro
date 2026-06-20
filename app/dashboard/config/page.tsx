@@ -72,7 +72,7 @@ export default function ConfigPage() {
 
 if (!file) return;
 
-if (file.size > 1024 * 1024) {
+if (file.size > 512 * 1024) {
   alert("A logo deve ter no máximo 1MB");
   return;
 }
