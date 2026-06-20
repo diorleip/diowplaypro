@@ -70,7 +70,12 @@ export default function ConfigPage() {
   ) {
     const file = e.target.files?.[0];
 
-    if (!file) return;
+if (!file) return;
+
+if (file.size > 1024 * 1024) {
+  alert("A logo deve ter no máximo 1MB");
+  return;
+}
 
     const reader = new FileReader();
 
