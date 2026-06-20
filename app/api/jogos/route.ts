@@ -1,8 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
+import fs from "fs";
+import path from "path";
 
 export async function GET(req: NextRequest) {
   try {
+    const hoje = new Date();
+
+const nomeArquivo =
+  `${hoje.getFullYear()}-${
+    String(hoje.getMonth() + 1).padStart(2, "0")
+  }-${
+    String(hoje.getDate()).padStart(2, "0")
+  }.json`;
+
+const arquivoJogos = path.join(
+  process.cwd(),
+  "data",
+  nomeArquivo
+);
+
+if (fs.existsSync(arquivoJogos)) {
+
+  const jogosCache =
+    JSON.parse(
+      fs.readFileSync(
+        arquivoJogos,
+        "utf8"
+      )
+    );
+
+  console.log(
+    "📁 Jogos carregados do cache"
+  );
+
+  return NextResponse.json({
+    texto: "",
+    jogos: jogosCache,
+  });
+
+}
     const dia =
       req.nextUrl.searchParams.get("dia") || "hoje";
 
@@ -71,6 +108,26 @@ const url =
       ).values(),
     ];
 
+    if (!fs.existsSync(path.join(process.cwd(), "data"))) {
+  fs.mkdirSync(
+    path.join(process.cwd(), "data")
+  );
+}
+
+fs.writeFileSync(
+  arquivoJogos,
+  JSON.stringify(
+    jogosUnicos,
+    null,
+    2
+  )
+);
+
+console.log(
+  "💾 Jogos salvos:",
+  arquivoJogos
+);
+
     const dataBase = new Date();
 
 if (dia === "amanha") {
@@ -111,6 +168,13 @@ const dataFormatada =
     texto += "━━━━━━━━━━━━━━━━━━\n";
     texto +=
       "⚽ Todos os jogos disponíveis no Diow Play! 🚀";
+
+      console.log(
+  "TOTAL JOGOS:",
+  jogosUnicos.length
+);
+
+console.log(jogosUnicos);
 
     return NextResponse.json({
       texto,

@@ -1,35 +1,9 @@
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-export function middleware(
-  request: NextRequest
-) {
-  const logado =
-    request.cookies.get("diow_user");
-
-  const isLogin =
-    request.nextUrl.pathname.startsWith(
-      "/login"
-    );
-
-  if (!logado && !isLogin) {
-    return NextResponse.redirect(
-      new URL("/login", request.url)
-    );
-  }
-
-  if (logado && isLogin) {
-    return NextResponse.redirect(
-      new URL("/dashboard", request.url)
-    );
-  }
-
+export function middleware() {
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/dashboard/:path*",
-    "/login",
-  ],
+  matcher: ["/dashboard/:path*", "/login"],
 };

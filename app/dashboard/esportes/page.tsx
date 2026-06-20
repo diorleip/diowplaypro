@@ -1,136 +1,240 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
+export default function EsportesPage() {
 
-const cores = [
-  {
-    nome: "Azul",
-    arquivo: "/modelos/azul/capa.png",
-    valor: "azul",
-    cor: "#2563eb",
-  },
-  {
-    nome: "Vermelho",
-    arquivo: "/modelos/vermelho/capa.png",
-    valor: "vermelho",
-    cor: "#dc2626",
-  },
-  {
-    nome: "Verde",
-    arquivo: "/modelos/verde/capa.png",
-    valor: "verde",
-    cor: "#16a34a",
-  },
-  {
-    nome: "Amarelo",
-    arquivo: "/modelos/amarelo/capa.png",
-    valor: "amarelo",
-    cor: "#eab308",
-  },
-  {
-    nome: "Preto",
-    arquivo: "/modelos/preto/capa.png",
-    valor: "preto",
-    cor: "#111827",
-  },
-];
-
-export default function ModelosPage() {
-  const [corSelecionada, setCorSelecionada] =
-    useState(cores[0]);
+  const emBreve = () => {
+    alert("🚧 Em breve!");
+  };
 
   return (
-    <main className="min-h-screen bg-[#020617] text-white p-4">
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "#050505",
+        padding: 30,
+      }}
+    >
 
-      <div className="max-w-5xl mx-auto">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: 30,
+        }}
+      >
+        <h1
+          style={{
+            color: "#fff",
+            fontSize: 34,
+            fontWeight: 900,
+            margin: 0,
+          }}
+        >
+          🏆 Central de Esportes
+        </h1>
 
-        <div className="flex items-center justify-between mb-8">
+        <button
+          onClick={() =>
+            (window.location.href = "/dashboard")
+          }
+          style={{
+            background: "#10b981",
+            color: "#fff",
+            border: "none",
+            borderRadius: 10,
+            padding: "12px 20px",
+            fontWeight: 700,
+            cursor: "pointer",
+          }}
+        >
+          ← Dashboard
+        </button>
+      </div>
 
-          <div>
-            <h1 className="text-3xl font-black">
-              🎨 Modelos
-            </h1>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(180px, 1fr))",
+          gap: 20,
+        }}
+      >
 
-            <p className="text-slate-400 text-sm mt-1">
-              Escolha a cor do Modelo 01
-            </p>
-          </div>
+        {/* FUTEBOL */}
+        <div
+          onClick={() =>
+            (window.location.href =
+              "/dashboard/esportes/banner")
+          }
+          style={{
+            background:
+              "linear-gradient(135deg,#0ea5e9,#1d4ed8)",
+            borderRadius: 16,
+            padding: 20,
+            cursor: "pointer",
+            textAlign: "center",
+          }}
+        >
+          <div style={{ fontSize: 50 }}>⚽</div>
 
-<Link
-  href="/dashboard"
-  className="bg-slate-900 px-4 py-2 rounded-xl font-bold border border-slate-700 text-sm"
->
-  ← Voltar
-</Link>
+          <h2
+            style={{
+              color: "#fff",
+              fontSize: 22,
+              marginTop: 8,
+            }}
+          >
+            Futebol
+          </h2>
 
+          <p
+            style={{
+              color: "#dbeafe",
+              fontSize: 13,
+            }}
+          >
+            Gerador de banners
+          </p>
         </div>
 
-        <div className="max-w-[280px] mx-auto">
+        {/* NBA */}
+        <div
+          onClick={emBreve}
+          style={{
+            background:
+              "linear-gradient(135deg,#ea580c,#c2410c)",
+            borderRadius: 16,
+            padding: 20,
+            cursor: "pointer",
+            textAlign: "center",
+          }}
+        >
+          <div style={{ fontSize: 50 }}>🏀</div>
 
-          <div className="bg-slate-900 rounded-3xl p-4 border border-slate-800">
+          <h2
+            style={{
+              color: "#fff",
+              fontSize: 22,
+              marginTop: 8,
+            }}
+          >
+            NBA
+          </h2>
 
-            <div className="flex justify-end mb-3">
+          <p
+            style={{
+              color: "#fed7aa",
+              fontSize: 13,
+            }}
+          >
+            Em breve
+          </p>
+        </div>
 
-              <div className="bg-pink-600 text-white font-bold px-3 py-1 rounded-full text-xs">
-                🎨 5 OPÇÕES
-              </div>
+        {/* FORMULA 1 */}
+        <div
+          onClick={emBreve}
+          style={{
+            background:
+              "linear-gradient(135deg,#dc2626,#991b1b)",
+            borderRadius: 16,
+            padding: 20,
+            cursor: "pointer",
+            textAlign: "center",
+          }}
+        >
+          <div style={{ fontSize: 50 }}>🏎️</div>
 
-            </div>
+          <h2
+            style={{
+              color: "#fff",
+              fontSize: 22,
+              marginTop: 8,
+            }}
+          >
+            Fórmula 1
+          </h2>
 
-            <div className="bg-black rounded-2xl overflow-hidden border border-slate-700">
+          <p
+            style={{
+              color: "#fecaca",
+              fontSize: 13,
+            }}
+          >
+            Em breve
+          </p>
+        </div>
 
-              <Image
-                key={corSelecionada.arquivo}
-                src={corSelecionada.arquivo}
-                alt="Modelo 01"
-                width={150}
-                height={250}
-                priority
-                className="mx-auto w-auto max-h-[420px]"
-              />
+        {/* UFC */}
+        <div
+          onClick={emBreve}
+          style={{
+            background:
+              "linear-gradient(135deg,#7c3aed,#4c1d95)",
+            borderRadius: 16,
+            padding: 20,
+            cursor: "pointer",
+            textAlign: "center",
+          }}
+        >
+          <div style={{ fontSize: 50 }}>🥊</div>
 
-            </div>
+          <h2
+            style={{
+              color: "#fff",
+              fontSize: 22,
+              marginTop: 8,
+            }}
+          >
+            UFC
+          </h2>
 
-            <h2 className="text-center text-xl font-black mt-4">
-              Modelo 01
-            </h2>
+          <p
+            style={{
+              color: "#ddd6fe",
+              fontSize: 13,
+            }}
+          >
+            Em breve
+          </p>
+        </div>
 
-            <div className="flex justify-center gap-2 mt-4">
+        {/* DEMAIS */}
+        <div
+          onClick={emBreve}
+          style={{
+            background:
+              "linear-gradient(135deg,#475569,#1e293b)",
+            borderRadius: 16,
+            padding: 20,
+            cursor: "pointer",
+            textAlign: "center",
+          }}
+        >
+          <div style={{ fontSize: 50 }}>🎯</div>
 
-              {cores.map((cor) => (
-                <button
-                  key={cor.valor}
-                  onClick={() =>
-                    setCorSelecionada(cor)
-                  }
-                  className={`w-10 h-10 rounded-xl border-4 transition-all ${
-                    corSelecionada.valor === cor.valor
-                      ? "border-white scale-110"
-                      : "border-white/10"
-                  }`}
-                  style={{
-                    background: cor.cor,
-                  }}
-                />
-              ))}
+          <h2
+            style={{
+              color: "#fff",
+              fontSize: 22,
+              marginTop: 8,
+            }}
+          >
+            Demais Esportes
+          </h2>
 
-            </div>
-
-            <Link
-              href={`/dashboard/esportes/banner?modelo=1&cor=${corSelecionada.valor}`}
-              className="block text-center mt-5 bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold text-sm"
-            >
-              USAR MODELO
-            </Link>
-
-          </div>
-
+          <p
+            style={{
+              color: "#cbd5e1",
+              fontSize: 13,
+            }}
+          >
+            Em breve
+          </p>
         </div>
 
       </div>
-
-    </main>
+    </div>
   );
 }

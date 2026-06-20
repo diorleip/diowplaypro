@@ -177,7 +177,7 @@ ${
     scrollX: 0,
     scrollY: 0,
 
-    scale: 2
+    scale: 1
   }
 );
 
@@ -387,10 +387,6 @@ ${
 {/* Banner */}
 <div
   className="flex justify-center overflow-auto"
-  style={{
-    padding: "11px",
-       transformOrigin: "top center",
-  }}
 >
   <div
     ref={bannerRef}
