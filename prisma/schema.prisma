@@ -26,12 +26,18 @@ model User {
   email       String?
 
   plano       String?  @default("30 Dias")
-
   expiraEm    DateTime?
+
+  // CONFIGURAÇÕES DO GERADOR
+  logo               String?   @db.Text
+  contato            String?
+  telegramChatId     String?
+  removeBackground   Boolean   @default(false)
 }
+
 model Banner {
   id        String   @id @default(cuid())
   title     String
-  image     String
+  image     String   @db.Text
   createdAt DateTime @default(now())
 }
